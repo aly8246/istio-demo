@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import springfox.documentation.spring.web.plugins.Docket;
 
-@Component
 @ControllerAdvice
 @Slf4j
 public class ResponseResultHandlerAdvice implements ResponseBodyAdvice<Object> {
-
+    //TODO spring native
     /**
      * 只支持不包含swagger资源
      * @param returnType 返回类型
