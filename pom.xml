@@ -10,19 +10,54 @@
 	</parent>
 	<groupId>com.aly8246</groupId>
 	<artifactId>istio-demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<version>${revision}</version>
+	<name>istio-demo</name>
+	<packaging>pom</packaging>
 	<description>service mesh demo</description>
+
+	<modules>
+		<module>common</module>
+		<module>order-api</module>
+	</modules>
+
 	<properties>
-		<java.version>1.8</java.version>
+
+		<!--
+			主版本号.次版本号.修订版本号-发布环境
+			1.0.0-RELEASE
+		 -->
+		<main.version>1</main.version>
+		<slave.version>0</slave.version>
+		<last.version>0</last.version>
+
+		<!--主版本号.次版本号.修订版本号-->
+		<revision>${main.version}.${slave.version}.${last.version}</revision>
+
+		<env>dev</env>
+		<build.custom.finalName>${project.artifactId}-${project.version}-SNAPSHOT</build.custom.finalName>
+
+		<!--docker-->
+		<docker.project.name>tskj-faas</docker.project.name>
+		<docker.registry>registry.cn-hangzhou.aliyuncs.com</docker.registry>
+		<docker.username>qmkcdata</docker.username>
+		<docker.password>qmkc1010</docker.password>
+
+		<java.version>8</java.version>
+		<spring-boot.version>2.5.0</spring-boot.version>
 	</properties>
 
+
 	<dependencies>
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-spring-boot-starter</artifactId>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -35,21 +70,191 @@
 		</dependency>
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.aly8246</groupId>
+				<artifactId>common</artifactId>
+				<version>1.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.xiaoymin</groupId>
+				<artifactId>knife4j-spring-boot-starter</artifactId>
+				<version>2.0.7</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
+		<!--最终编译jar包的名字-->
+		<finalName>${build.custom.finalName}</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<!--spring boot打包-->
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<excludes>
+							<exclude>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+							</exclude>
+						</excludes>
+						<image>
+							<builder>paketobuildpacks/builder:tiny</builder>
+							<env>
+								<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+							</env>
+						</image>
+					</configuration>
+				</plugin>
+				<plugin>
+					<!--aot打包-->
+					<groupId>org.springframework.experimental</groupId>
+					<artifactId>spring-aot-maven-plugin</artifactId>
+					<version>${spring-native.version}</version>
+					<executions>
+						<execution>
+							<id>test-generate</id>
+							<goals>
+								<goal>test-generate</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>generate</id>
+							<goals>
+								<goal>generate</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<!--pom精简-->
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>flatten-maven-plugin</artifactId>
+					<version>1.1.0</version>
+
+					<configuration>
+						<updatePomFile>true</updatePomFile>
+						<flattenMode>resolveCiFriendliesOnly</flattenMode>
+					</configuration>
+
+					<executions>
+						<execution>
+							<id>flatten</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>flatten</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>flatten.clean</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<!--Dockerfile打包-->
+					<groupId>com.spotify</groupId>
+					<artifactId>dockerfile-maven-plugin</artifactId>
+					<version>1.4.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>javax.activation</groupId>
+							<artifactId>activation</artifactId>
+							<version>1.1.1</version>
+						</dependency>
+					</dependencies>
+					<executions>
+						<execution>
+							<id>tag-latest</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>build</goal>
+								<goal>tag</goal>
+								<goal>push</goal>
+							</goals>
+							<configuration>
+								<tag>latest</tag>
+							</configuration>
+						</execution>
+						<execution>
+							<id>tag-version</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>tag</goal>
+								<goal>push</goal>
+							</goals>
+							<configuration>
+								<tag>${project.version}</tag>
+							</configuration>
+						</execution>
+					</executions>
+					<configuration>
+						<!--远程仓库地址，不是镜像名字-->
+						<repository>${docker.registry}/${docker.project.name}/${project.artifactId}</repository>
+						<tag>latest</tag>
+
+						<buildArgs>
+							<ENV>${env}</ENV>
+							<JAR_FILE_NAME>${build.custom.finalName}.jar</JAR_FILE_NAME>
+						</buildArgs>
+
+						<username>${docker.username}</username>
+						<password>${docker.password}</password>
+
+					</configuration>
+				</plugin>
+				<plugin>
+					<!--maven部署插件-->
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>3.0.0-M1</version>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>${project.basedir}</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>*-deploy.yml</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!--环境-->
+				<env>test</env>
+				<build.custom.finalName>${project.artifactId}-${project.version}-TESTING</build.custom.finalName>
+			</properties>
+		</profile>
+		<profile>
+			<id>prd</id>
+			<properties>
+				<!--环境-->
+				<env>prd</env>
+				<build.custom.finalName>${project.artifactId}-${project.version}-RELEASE</build.custom.finalName>
+			</properties>
+		</profile>
+	</profiles>
 </project>
