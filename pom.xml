@@ -20,10 +20,10 @@
 		<module>common</module>
 		<module>order-api</module>
 		<module>stock-api</module>
+		<module>goods-api</module>
 	</modules>
 
 	<properties>
-
 		<!--
 			主版本号.次版本号.修订版本号-发布环境
 			1.0.0-RELEASE
@@ -46,6 +46,7 @@
 
 		<java.version>8</java.version>
 		<spring-boot.version>2.5.0</spring-boot.version>
+		<spring-native.version>0.10.0-SNAPSHOT</spring-native.version>
 	</properties>
 
 
@@ -84,11 +85,28 @@
 				<artifactId>knife4j-spring-boot-starter</artifactId>
 				<version>3.0.2</version>
 			</dependency>
-
+			<dependency>
+				<groupId>com.github.xiaoymin</groupId>
+				<artifactId>knife4j-micro-spring-boot-starter</artifactId>
+				<version>3.0.2</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-openfeign</artifactId>
 				<version>3.0.3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.experimental</groupId>
+				<artifactId>spring-native</artifactId>
+				<version>0.10.0-SNAPSHOT</version>
+			</dependency>
+
+			<!--spring r2dbc数据库依赖-->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-r2dbc</artifactId>
+				<version>${spring-boot.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -96,7 +114,7 @@
 
 	<build>
 		<!--最终编译jar包的名字-->
-		<finalName>${build.custom.finalName}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -227,6 +245,15 @@
 						<skip>true</skip>
 					</configuration>
 				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<configuration>
+						<delimiters>@</delimiters>
+						<useDefaultDelimiters>false</useDefaultDelimiters>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -238,31 +265,31 @@
 				<directory>${project.basedir}</directory>
 				<filtering>false</filtering>
 				<includes>
-					<include>*-deploy.yml</include>
+					<include>*.yml</include>
 				</includes>
 			</resource>
 		</resources>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>test</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<!--环境-->
-				<env>test</env>
-				<build.custom.finalName>${project.artifactId}-${project.version}-TESTING</build.custom.finalName>
-			</properties>
-		</profile>
-		<profile>
-			<id>prd</id>
-			<properties>
-				<!--环境-->
-				<env>prd</env>
-				<build.custom.finalName>${project.artifactId}-${project.version}-RELEASE</build.custom.finalName>
-			</properties>
-		</profile>
-	</profiles>
+<!--	<profiles>-->
+<!--		<profile>-->
+<!--			<id>test</id>-->
+<!--			<activation>-->
+<!--				<activeByDefault>true</activeByDefault>-->
+<!--			</activation>-->
+<!--			<properties>-->
+<!--				&lt;!&ndash;环境&ndash;&gt;-->
+<!--				<env>test</env>-->
+<!--				<build.custom.finalName>${project.artifactId}-${project.version}-TESTING</build.custom.finalName>-->
+<!--			</properties>-->
+<!--		</profile>-->
+<!--		<profile>-->
+<!--			<id>prd</id>-->
+<!--			<properties>-->
+<!--				&lt;!&ndash;环境&ndash;&gt;-->
+<!--				<env>prd</env>-->
+<!--				<build.custom.finalName>${project.artifactId}-${project.version}-RELEASE</build.custom.finalName>-->
+<!--			</properties>-->
+<!--		</profile>-->
+<!--	</profiles>-->
 </project>

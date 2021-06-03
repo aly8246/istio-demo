@@ -1,32 +1,25 @@
 package com.aly8246.common.swagger;
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
-import com.sun.deploy.util.StringUtils;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @EnableKnife4j
-@EnableSwagger2WebMvc
 @Import(BeanValidatorPluginsConfiguration.class)
+@ConditionalOnProperty(prefix = "spring",name = "profiles.active",havingValue = "dev")
 @RequiredArgsConstructor
 public class SwaggerConfiguration {
     private final ApplicationContext context;

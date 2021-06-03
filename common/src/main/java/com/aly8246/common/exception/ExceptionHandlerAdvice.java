@@ -17,9 +17,9 @@ public class ExceptionHandlerAdvice {
      * @return 统一响应体
      */
     @ExceptionHandler(Exception.class)
-    public Result<Void> handleException(Exception e){
+    public Result<Object> handleException(Exception e){
         log.error(e.getMessage(),e);
-        return new Result<>(ResultCode.SERVICE_ERROR.getCode(),ResultCode.SERVICE_ERROR.getMsg(),null);
+        return new Result<>(ResultCode.SERVICE_ERROR.getCode(),ResultCode.SERVICE_ERROR.getMsg(),e.getMessage());
     }
 
     /**
@@ -28,9 +28,9 @@ public class ExceptionHandlerAdvice {
      * @return 统一响应体
      */
     @ExceptionHandler(RuntimeException.class)
-    public Result<Void> handleRuntimeException(RuntimeException e){
+    public Result<Object> handleRuntimeException(RuntimeException e){
         log.error(e.getMessage(),e);
-        return new Result<>(ResultCode.SERVICE_ERROR.getCode(),ResultCode.SERVICE_ERROR.getMsg(),null);
+        return new Result<>(ResultCode.SERVICE_ERROR.getCode(),ResultCode.SERVICE_ERROR.getMsg(),e.getMessage());
     }
 
     /**
@@ -39,9 +39,9 @@ public class ExceptionHandlerAdvice {
      * @return 统一响应体
      */
     @ExceptionHandler(BaseException.class)
-    public Result<Void> handleBaseException(BaseException e){
+    public Result<Object> handleBaseException(BaseException e){
         log.error(e.getMessage(),e);
         ResultCode code=e.getCode();
-        return new Result<>(code.getCode(),code.getMsg(),null);
+        return new Result<>(code.getCode(),code.getMsg(),e.getMessage());
     }
 }

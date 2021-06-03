@@ -38,7 +38,13 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--        <dependency>-->
 <!--            <groupId>io.springfox</groupId>-->
 <!--            <artifactId>springfox-boot-starter</artifactId>-->
 <!--            <version>3.0.0</version>-->
