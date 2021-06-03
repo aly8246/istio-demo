@@ -7,15 +7,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import static com.aly8246.common.res.ResultCode.RESOURCES_NOT_EXIST;
 
 @RestController
+@RequestMapping("stock")
 @Api(value = "库存控制器")
 public class StockController {
 
@@ -29,6 +27,17 @@ public class StockController {
             throw new BaseException(RESOURCES_NOT_EXIST);
         }
         return Mono.just(Result.ok(new Stock(goodsId,1L,100,50)));
+    }
+
+    @ApiOperation(value = "扣除产品库存")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "goodsId",value = "商品ID",required = true,paramType = "path"),
+            @ApiImplicitParam(name = "number",value = "商品数量",required = true,paramType = "query")
+    })
+    @PutMapping("{goodsId}")
+    public Mono<Result<Void>> deductGoodsStock(@PathVariable("goodsId") Long goodsId,@RequestParam Integer number){
+        System.out.println("goodsId = " + goodsId + ", number = " + number);
+        return Mono.just(Result.ok());
     }
 
 }

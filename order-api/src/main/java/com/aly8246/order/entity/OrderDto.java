@@ -26,6 +26,10 @@ public class OrderDto {
     @NotNull
     private Long goodsId;
 
+    @ApiModelProperty(value = "购买数量",example = "1",required = true)
+    @NotNull
+    private Integer number;
+
 //    @ApiModelProperty(value = "购物车编号",example = "[1,2]",required = true,dataType = "Long")
 //    @NotEmpty
 //    private List<Long> shoppingCardIds;

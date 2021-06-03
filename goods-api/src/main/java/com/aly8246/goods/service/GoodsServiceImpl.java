@@ -5,13 +5,14 @@ import com.aly8246.goods.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     @Override
-    public Flux<Goods> queryByGoodsId(Long goodsId) {
+    public Mono<Goods> queryByGoodsId(Long goodsId) {
         return goodsRepository.selectById(goodsId);
     }
 }
