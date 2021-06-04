@@ -23,7 +23,10 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 @RestController
 @Api(value = "订单控制器")
@@ -56,7 +59,7 @@ public class OrderController {
         stringList.add("3.生成订单数据");
         Order order=new Order(IDUtil.nextSnowflakeId(), orderCreateDto.getUserId(), orderCreateDto.getGoodsId(),
                 stockDto.getShopId(),goodsDto.getGoodsPrice(),new BigDecimal("0.0"),
-                Arrays.asList("未支付","已支付").get(new Random().nextInt(2)), new Date(),
+                Arrays.asList("未支付","已支付").get(new Random().nextInt(2)), LocalDateTime.now(),
                 Arrays.asList("微信","支付宝","paypal","银联").get(new Random().nextInt(4)));
         stringList.add(order.toString());
 

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -31,7 +30,7 @@ public class Order implements Serializable {
     @ApiModelProperty("订单状态")
     private String orderState;
     @ApiModelProperty("订单创建时间")
-    private Date createTime;
+    private LocalDateTime createTime;
     @ApiModelProperty("订单支付类型")
     private String payType;
 }
