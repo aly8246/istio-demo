@@ -24,16 +24,8 @@
 	</modules>
 
 	<properties>
-		<!--
-			主版本号.次版本号.修订版本号-发布环境
-			1.0.0-RELEASE
-		 -->
-		<main.version>1</main.version>
-		<slave.version>0</slave.version>
-		<last.version>0</last.version>
-
 		<!--主版本号.次版本号.修订版本号-->
-		<revision>${main.version}.${slave.version}.${last.version}</revision>
+		<revision>1.0.0</revision>
 
 		<env>dev</env>
 		<build.custom.finalName>${project.artifactId}-${project.version}-SNAPSHOT</build.custom.finalName>
@@ -149,34 +141,6 @@
 							</publishRegistry>
 						</docker>
 					</configuration>
-				</plugin>
-				<plugin>
-					<!--pom精简-->
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>flatten-maven-plugin</artifactId>
-					<version>1.1.0</version>
-
-					<configuration>
-						<updatePomFile>true</updatePomFile>
-						<flattenMode>resolveCiFriendliesOnly</flattenMode>
-					</configuration>
-
-					<executions>
-						<execution>
-							<id>flatten</id>
-							<phase>process-resources</phase>
-							<goals>
-								<goal>flatten</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>flatten.clean</id>
-							<phase>clean</phase>
-							<goals>
-								<goal>clean</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<!--maven部署插件-->

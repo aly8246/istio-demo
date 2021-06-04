@@ -7,5 +7,8 @@ management:
     web:
       exposure:
         include: "*"
+  health:
+    probes:
+      enabled: true
 
 

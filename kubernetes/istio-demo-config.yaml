@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: order-config
-  namespace: istio-config
+  namespace: istio-demo
 data:
   application-test.yml: |
     server:
@@ -20,14 +20,14 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: goods-config
-  namespace: istio-config
+  namespace: istio-demo
 data:
   application-test.yml: |
     server:
       port: 8001
     spring:
       r2dbc:
-        url: r2dbc:mysql://120.55.78.23:3306/goods
+        url: r2dbc:mysql://120.55.78.23:3306/goods?useSSL=false
         username: root
         password: 365tskj.dev123456
 ---

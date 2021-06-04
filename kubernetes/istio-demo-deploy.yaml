@@ -48,16 +48,16 @@ spec:
             name: order-config
       containers:
         - name: order
-          image: registry.cn-hangzhou.aliyuncs.com/tskj-faas/test-config:0.0.1-SNAPSHOT
+          image: registry.cn-hangzhou.aliyuncs.com/istio-java/order-api:1.0.0
           imagePullPolicy: Always
-          args: ["--spring.config.location=/etc/application-dev.yml"]
+          args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/ "]
           ports:
             - containerPort: 8000
           securityContext:
             runAsUser: 1000
           volumeMounts:
             - name: order-volume
-              mountPath: /etc/application-dev.yml
+              mountPath: /etc/java/application-dev.yml
               subPath: application-dev.yml
           livenessProbe:
             httpGet:
@@ -72,6 +72,167 @@ spec:
             httpGet:
               path: "/actuator/health/readiness"
               port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goods
+  namespace: istio-demo
+  labels:
+    app: goods
+    service: goods
+spec:
+  ports:
+    - port: 8001
+      name: http
+  selector:
+    app: goods
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: goods-account
+  namespace: istio-demo
+  labels:
+    account: goods
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goods
+  namespace: istio-demo
+  labels:
+    app: goods
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goods
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: goods
+        version: v1
+    spec:
+      serviceAccountName: goods-account
+      volumes:
+        - name: goods-volume
+          configMap:
+            name: goods-config
+      containers:
+        - name: goods
+          image: registry.cn-hangzhou.aliyuncs.com/istio-java/goods-api:1.0.0
+          imagePullPolicy: Always
+          args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/ "]
+          ports:
+            - containerPort: 8001
+          securityContext:
+            runAsUser: 1000
+          volumeMounts:
+            - name: goods-volume
+              mountPath: /etc/java/application-dev.yml
+              subPath: application-dev.yml
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health/liveness"
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health/readiness"
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock
+  namespace: istio-demo
+  labels:
+    app: stock
+    service: stock
+spec:
+  ports:
+    - port: 8002
+      name: http
+  selector:
+    app: stock
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: stock-account
+  namespace: istio-demo
+  labels:
+    account: stock
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock
+  namespace: istio-demo
+  labels:
+    app: stock
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stock
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: stock
+        version: v1
+    spec:
+      serviceAccountName: stock-account
+      volumes:
+        - name: stock-volume
+          configMap:
+            name: stock-config
+      containers:
+        - name: stock
+          image: registry.cn-hangzhou.aliyuncs.com/istio-java/stock-api:1.0.0
+          imagePullPolicy: Always
+          args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/ "]
+          ports:
+            - containerPort: 8002
+          securityContext:
+            runAsUser: 1000
+          volumeMounts:
+            - name: stock-volume
+              mountPath: /etc/java/application-dev.yml
+              subPath: application-dev.yml
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health/liveness"
+              port: 8002
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health/readiness"
+              port: 8002
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 3

@@ -27,13 +27,9 @@ public class GoodsController {
     @SneakyThrows
     @ApiOperation("根据商品ID查询商品详情")
     @GetMapping("{goodsId}")
-    public Mono<Result<Goods>> queryByGoodsId(@PathVariable Long goodsId){
+    public Result<Goods> queryByGoodsId(@PathVariable Long goodsId){
         System.out.println("queryByGoodsId::goodsId = " + goodsId);
-        return goodsService
-                .queryByGoodsId(goodsId)
-                .map(Result::ok)
-                .defaultIfEmpty(Result.not_found(GOODS_NOT_EXIST))
-                ;
+        return Result.ok(goodsService.getById(goodsId));
     }
 
 }
