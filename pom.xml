@@ -129,7 +129,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<!--spring boot打包-->
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
@@ -140,11 +139,20 @@
 							</exclude>
 						</excludes>
 						<image>
-							<builder>paketobuildpacks/builder:tiny</builder>
-							<env>
-								<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-							</env>
+							<name>registry.cn-hangzhou.aliyuncs.com/365tskj-istio-demo/${project.artifactId}:${project.version}</name>
+							<!-- 执行完build 自动push -->
+							<publish>true</publish>
+							<!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT -->
+							<pullPolicy>IF_NOT_PRESENT</pullPolicy>
 						</image>
+						<!--配置构建宿主机信息，本机不用配置-->
+						<docker>
+							<publishRegistry>
+								<username>qmkcdata</username>
+								<password>qmkc1010</password>
+								<url>registry.cn-hangzhou.aliyuncs.com</url>
+							</publishRegistry>
+						</docker>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -196,73 +204,12 @@
 					</executions>
 				</plugin>
 				<plugin>
-					<!--Dockerfile打包-->
-					<groupId>com.spotify</groupId>
-					<artifactId>dockerfile-maven-plugin</artifactId>
-					<version>1.4.0</version>
-					<dependencies>
-						<dependency>
-							<groupId>javax.activation</groupId>
-							<artifactId>activation</artifactId>
-							<version>1.1.1</version>
-						</dependency>
-					</dependencies>
-					<executions>
-						<execution>
-							<id>tag-latest</id>
-							<phase>deploy</phase>
-							<goals>
-								<goal>build</goal>
-								<goal>tag</goal>
-								<goal>push</goal>
-							</goals>
-							<configuration>
-								<tag>latest</tag>
-							</configuration>
-						</execution>
-						<execution>
-							<id>tag-version</id>
-							<phase>deploy</phase>
-							<goals>
-								<goal>tag</goal>
-								<goal>push</goal>
-							</goals>
-							<configuration>
-								<tag>${project.version}</tag>
-							</configuration>
-						</execution>
-					</executions>
-					<configuration>
-						<!--远程仓库地址，不是镜像名字-->
-						<repository>${docker.registry}/${docker.project.name}/${project.artifactId}</repository>
-						<tag>latest</tag>
-
-						<buildArgs>
-							<ENV>${env}</ENV>
-							<JAR_FILE_NAME>${build.custom.finalName}.jar</JAR_FILE_NAME>
-						</buildArgs>
-
-						<username>${docker.username}</username>
-						<password>${docker.password}</password>
-
-					</configuration>
-				</plugin>
-				<plugin>
 					<!--maven部署插件-->
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>3.0.0-M1</version>
 					<configuration>
 						<skip>true</skip>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<configuration>
-						<delimiters>@</delimiters>
-						<useDefaultDelimiters>false</useDefaultDelimiters>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -281,26 +228,4 @@
 			</resource>
 		</resources>
 	</build>
-
-<!--	<profiles>-->
-<!--		<profile>-->
-<!--			<id>test</id>-->
-<!--			<activation>-->
-<!--				<activeByDefault>true</activeByDefault>-->
-<!--			</activation>-->
-<!--			<properties>-->
-<!--				&lt;!&ndash;环境&ndash;&gt;-->
-<!--				<env>test</env>-->
-<!--				<build.custom.finalName>${project.artifactId}-${project.version}-TESTING</build.custom.finalName>-->
-<!--			</properties>-->
-<!--		</profile>-->
-<!--		<profile>-->
-<!--			<id>prd</id>-->
-<!--			<properties>-->
-<!--				&lt;!&ndash;环境&ndash;&gt;-->
-<!--				<env>prd</env>-->
-<!--				<build.custom.finalName>${project.artifactId}-${project.version}-RELEASE</build.custom.finalName>-->
-<!--			</properties>-->
-<!--		</profile>-->
-<!--	</profiles>-->
 </project>

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,7 +75,7 @@ public class JacksonWebConfiguration {
     }
 
     @Bean
-    public HttpMessageConverters jacksonHttpMessageConverters() {
-        return new HttpMessageConverters(mappingJackson2HttpMessageConverter());
+    public HttpMessageConverters jacksonHttpMessageConverters(@Qualifier("mappingJackson2HttpMessageConverter") MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+        return new HttpMessageConverters(mappingJackson2HttpMessageConverter);
     }
 }

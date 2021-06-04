@@ -1,0 +1,52 @@
+#网络API
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: istio-demo-ingress
+  namespace: istio-demo
+spec:
+  rules:
+    - host: istio-demo.test.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: order-api
+              servicePort: 8000
+---
+#网关
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-demo-gateway
+  namespace: istio-demo
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istio-demo-virualService
+  namespace: istio-demo
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - istio-demo-gateway
+  http:
+    - match:
+        - uri:
+            exact: /order
+      route:
+        - destination:
+            host: order
+            port:
+              number: 8000

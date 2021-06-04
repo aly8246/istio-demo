@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: order
+  namespace: istio-demo
+  labels:
+    app: order
+    service: order
+spec:
+  ports:
+    - port: 8000
+      name: http
+  selector:
+    app: order
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: order-account
+  namespace: istio-demo
+  labels:
+    account: order
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+  namespace: istio-demo
+  labels:
+    app: order
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: order
+        version: v1
+    spec:
+      serviceAccountName: order-account
+      volumes:
+        - name: order-volume
+          configMap:
+            name: order-config
+      containers:
+        - name: order
+          image: registry.cn-hangzhou.aliyuncs.com/tskj-faas/test-config:0.0.1-SNAPSHOT
+          imagePullPolicy: Always
+          args: ["--spring.config.location=/etc/application-dev.yml"]
+          ports:
+            - containerPort: 8000
+          securityContext:
+            runAsUser: 1000
+          volumeMounts:
+            - name: order-volume
+              mountPath: /etc/application-dev.yml
+              subPath: application-dev.yml
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health/liveness"
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health/readiness"
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
