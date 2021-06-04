@@ -3,6 +3,7 @@ package com.aly8246.goods;
 import com.aly8246.common.swagger.EnableSwagger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableSwagger(developer="小明",email = "1@qq.com")

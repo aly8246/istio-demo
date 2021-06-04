@@ -6,14 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class OrderCreateDto {
     @ApiModelProperty(value = "用户ID",example = "1",required = true)
     @NotNull
     private Long userId;

@@ -108,6 +108,17 @@
 				<artifactId>spring-boot-starter-data-r2dbc</artifactId>
 				<version>${spring-boot.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>3.4.3</version>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>5.1.49</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

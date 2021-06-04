@@ -4,4 +4,5 @@ com.aly8246.common.web.JacksonWebConfiguration,\
 com.aly8246.common.web.SpringWebMvcConfiguration,\
 com.aly8246.common.exception.ExceptionHandlerAdvice,\
 com.aly8246.common.res.ResponseResultHandlerAdvice,\
-com.aly8246.common.feign.CustomFeignClientConfiguration
+com.aly8246.common.feign.CustomFeignClientConfiguration,\
+com.aly8246.common.web.AsyncConfig

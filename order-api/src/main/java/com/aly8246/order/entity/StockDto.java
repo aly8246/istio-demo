@@ -1,4 +1,4 @@
-package com.aly8246.stock.entity;
+package com.aly8246.order.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "库存实体类")
-public class Stock {
+public class StockDto {
     @ApiModelProperty("商品ID")
     private Long goodsId;
 

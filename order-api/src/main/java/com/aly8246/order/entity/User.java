@@ -5,12 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode
+@NoArgsConstructor
 @ApiModel(value = "用户实体类")
 public class User implements Serializable {
     @ApiModelProperty(value="id" ,required= true,example = "123")

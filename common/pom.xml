@@ -43,6 +43,11 @@
             <artifactId>spring-webflux</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <!--        <dependency>-->
 <!--            <groupId>io.springfox</groupId>-->
