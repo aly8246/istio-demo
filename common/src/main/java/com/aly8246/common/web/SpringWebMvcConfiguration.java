@@ -16,7 +16,7 @@ public class SpringWebMvcConfiguration implements WebMvcConfigurer {
                 .addResourceHandler("/**")
                 .addResourceLocations("/doc.html")
                 .addResourceLocations("/swagger-ui.html")
-                .addResourceLocations("classpath:/templates/")
+                .addResourceLocations("classpath*:/templates/")
         ;
     }
 }

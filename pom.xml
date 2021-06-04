@@ -11,7 +11,7 @@
 
 	<groupId>com.aly8246</groupId>
 	<artifactId>istio-demo</artifactId>
-	<version>${revision}</version>
+	<version>1.0.0</version>
 	<name>istio-demo</name>
 	<packaging>pom</packaging>
 	<description>service mesh demo</description>
@@ -39,10 +39,10 @@
 		<build.custom.finalName>${project.artifactId}-${project.version}-SNAPSHOT</build.custom.finalName>
 
 		<!--docker-->
-		<docker.project.name>tskj-faas</docker.project.name>
+		<docker.project.name>istio-java</docker.project.name>
 		<docker.registry>registry.cn-hangzhou.aliyuncs.com</docker.registry>
-		<docker.username>qmkcdata</docker.username>
-		<docker.password>qmkc1010</docker.password>
+		<docker.username>306756237@qq.com</docker.username>
+		<docker.password>306756237@qq.com</docker.password>
 
 		<java.version>8</java.version>
 		<spring-boot.version>2.5.0</spring-boot.version>
@@ -75,11 +75,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>com.aly8246</groupId>
-				<artifactId>common</artifactId>
-				<version>1.0.0</version>
-			</dependency>
 			<dependency>
 				<groupId>com.github.xiaoymin</groupId>
 				<artifactId>knife4j-spring-boot-starter</artifactId>
@@ -139,7 +134,7 @@
 							</exclude>
 						</excludes>
 						<image>
-							<name>registry.cn-hangzhou.aliyuncs.com/365tskj-istio-demo/${project.artifactId}:${project.version}</name>
+							<name>${docker.registry}/${docker.project.name}/${project.artifactId}:${project.version}</name>
 							<!-- 执行完build 自动push -->
 							<publish>true</publish>
 							<!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT -->
@@ -148,32 +143,12 @@
 						<!--配置构建宿主机信息，本机不用配置-->
 						<docker>
 							<publishRegistry>
-								<username>qmkcdata</username>
-								<password>qmkc1010</password>
-								<url>registry.cn-hangzhou.aliyuncs.com</url>
+								<username>${docker.username}</username>
+								<password>${docker.password}</password>
+								<url>${docker.registry}</url>
 							</publishRegistry>
 						</docker>
 					</configuration>
-				</plugin>
-				<plugin>
-					<!--aot打包-->
-					<groupId>org.springframework.experimental</groupId>
-					<artifactId>spring-aot-maven-plugin</artifactId>
-					<version>${spring-native.version}</version>
-					<executions>
-						<execution>
-							<id>test-generate</id>
-							<goals>
-								<goal>test-generate</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>generate</id>
-							<goals>
-								<goal>generate</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<!--pom精简-->
