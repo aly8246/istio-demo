@@ -41,3 +41,9 @@ data:
   application-test.yml: |
     server:
       port: 8002
+    spring:
+      datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://120.55.78.23:3306/order?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+        username: root
+        password: 365tskj.dev123456

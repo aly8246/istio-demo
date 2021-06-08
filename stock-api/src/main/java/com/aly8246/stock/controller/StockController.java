@@ -3,11 +3,16 @@ package com.aly8246.stock.controller;
 import com.aly8246.common.exception.ServerException;
 import com.aly8246.common.res.Result;
 import com.aly8246.stock.entity.Stock;
+import com.aly8246.stock.entity.UnavailableCtl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -19,7 +24,10 @@ import static com.aly8246.common.res.ResultCode.SERVICE_NOT_UNAVAILABLE;
 @RestController
 @RequestMapping("stock")
 @Api(value = "库存控制器")
+@RequiredArgsConstructor
+@Slf4j
 public class StockController {
+    private final RedisTemplate<String,Object> redisTemplate;
 
     @ApiOperation(value = "查询产品库存")
     @ApiImplicitParams({
@@ -41,10 +49,13 @@ public class StockController {
     })
     @PutMapping("{goodsId}::{goodsNumber}")
     public Mono<Result<Stock>> deductGoodsStock(@PathVariable("goodsId") Long goodsId,@PathVariable("goodsNumber") Integer goodsNumber){
-        //设定有50%几率抛出http 503
-        if (new Random().nextInt()%2==0){
+
+        //每次都查询redis。看看要不要开启503
+        UnavailableCtl unavailableCtl = (UnavailableCtl) redisTemplate.opsForValue().get("unavailable_ctl:" + CircuitBreakerCtl.serverId);
+        if (unavailableCtl.getUnavailable()){
             throw new ServerException(SERVICE_NOT_UNAVAILABLE);
         }
+        log.info(unavailableCtl.toString());
 
         System.out.println("deductGoodsStock::goodsId = " + goodsId + ", goodsNumber = " + goodsNumber);
         return Mono.just(Result.ok(new Stock(goodsId,1L,100,50)));

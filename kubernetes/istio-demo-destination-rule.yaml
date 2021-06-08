@@ -9,7 +9,7 @@ spec:
     connectionPool:
       http:
         http1MaxPendingRequests: 2
-        maxRequestsPerConnection: 2
+        maxRequestsPerConnection: 3
     outlierDetection:
       consecutiveErrors: 3
       interval: 30s
