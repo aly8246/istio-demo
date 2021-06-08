@@ -59,9 +59,10 @@ public class ExceptionHandlerAdvice {
         response.setStatus(RESOURCES_NOT_EXIST.getHttpCode());
 
         /*
-         * 如果是404或者503就向下传递
+         * 如果不包含"no healthy upstream" 如果是404或者503就向下传递
+         * no healthy upstream 是由istio发起的无健康实例
          */
-        if(e instanceof FeignException.NotFound || e instanceof FeignException.ServiceUnavailable){
+        if(!e.contentUTF8().contains("no healthy upstream") && (e instanceof FeignException.NotFound || e instanceof FeignException.ServiceUnavailable)){
             //获取result响应体
             Result<?> result = JsonUtil.jsonToObject(e.contentUTF8(), Result.class);
 
