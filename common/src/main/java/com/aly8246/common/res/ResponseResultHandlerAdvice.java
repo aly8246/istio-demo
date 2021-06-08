@@ -13,7 +13,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 @ControllerAdvice
 @Slf4j
 public class ResponseResultHandlerAdvice implements ResponseBodyAdvice<Object> {
-    //TODO spring native
     /**
      * 只支持不包含swagger资源
      * @param returnType 返回类型

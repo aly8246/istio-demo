@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: istio-demo-stock-dr
+  namespace: istio-demo
+spec:
+  host: stock
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 2
+        maxRequestsPerConnection: 2
+    outlierDetection:
+      consecutiveErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100

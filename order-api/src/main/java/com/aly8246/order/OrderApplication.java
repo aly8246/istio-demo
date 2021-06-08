@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableSwagger(developer="小明",email = "1@qq.com")
+@EnableSwagger(developer="小明",email = "1@qq.com",service = "订单服务")
 @EnableFeignClients("com.aly8246.*.remote")
 @MapperScan("com.aly8246.order.repository")
 public class OrderApplication {
