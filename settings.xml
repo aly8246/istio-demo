@@ -7,7 +7,7 @@
         <pluginGroup>com.spotify</pluginGroup>
     </pluginGroups>
 
-    <localRepository>D:/.m2</localRepository>
+    <localRepository>D:\.m2</localRepository>
 
     <mirrors>
       	<mirror>

@@ -30,7 +30,7 @@ metadata:
     app: order
     version: v1
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: order
@@ -50,7 +50,7 @@ spec:
         - name: order
           image: registry.cn-hangzhou.aliyuncs.com/istio-java/order-api:1.0.0
           imagePullPolicy: Always
-          args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/ "]
+          args: ["--spring.profiles.active=dev --spring.config.additional-location=/etc/java/ "]
           ports:
             - containerPort: 8000
           securityContext:
@@ -111,7 +111,7 @@ metadata:
     app: goods
     version: v1
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: goods
@@ -191,7 +191,7 @@ metadata:
     app: stock
     version: v1
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: stock

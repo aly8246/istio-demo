@@ -28,7 +28,9 @@
 		<revision>1.0.0</revision>
 
 		<env>dev</env>
-		<build.custom.finalName>${project.artifactId}-${project.version}-SNAPSHOT</build.custom.finalName>
+
+		<!-- 构建镜像时的定制参数 -->
+		<native.build.args></native.build.args>
 
 		<!--docker-->
 		<docker.project.name>istio-java</docker.project.name>
@@ -62,6 +64,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
@@ -111,8 +122,6 @@
 
 
 	<build>
-		<!--最终编译jar包的名字-->
-		<finalName>${project.artifactId}-${project.version}</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -126,9 +135,14 @@
 							</exclude>
 						</excludes>
 						<image>
+							<builder>paketobuildpacks/builder:full</builder>
 							<name>${docker.registry}/${docker.project.name}/${project.artifactId}:${project.version}</name>
 							<!-- 执行完build 自动push -->
 							<publish>true</publish>
+							<env>
+<!--								<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>-->
+								<BP_NATIVE_IMAGE_BUILD_ARGUMENTS>${native.build.args}</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+							</env>
 							<!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT -->
 							<pullPolicy>IF_NOT_PRESENT</pullPolicy>
 						</image>
@@ -141,6 +155,26 @@
 							</publishRegistry>
 						</docker>
 					</configuration>
+				</plugin>
+				<plugin>
+					<!--aot打包-->
+					<groupId>org.springframework.experimental</groupId>
+					<artifactId>spring-aot-maven-plugin</artifactId>
+					<version>${spring-native.version}</version>
+					<executions>
+						<execution>
+							<id>test-generate</id>
+							<goals>
+								<goal>test-generate</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>generate</id>
+							<goals>
+								<goal>generate</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<!--maven部署插件-->
