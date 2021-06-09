@@ -52,10 +52,14 @@ public class StockController {
 
         //每次都查询redis。看看要不要开启503
         UnavailableCtl unavailableCtl = (UnavailableCtl) redisTemplate.opsForValue().get("unavailable_ctl:" + CircuitBreakerCtl.serverId);
-        if (unavailableCtl.getUnavailable()){
-            throw new ServerException(SERVICE_NOT_UNAVAILABLE);
+
+        if (unavailableCtl!=null)
+        {
+            log.info(unavailableCtl.toString());
+            if (unavailableCtl.getUnavailable()){
+                throw new ServerException(SERVICE_NOT_UNAVAILABLE);
+            }
         }
-        log.info(unavailableCtl.toString());
 
         System.out.println("deductGoodsStock::goodsId = " + goodsId + ", goodsNumber = " + goodsNumber);
         return Mono.just(Result.ok(new Stock(goodsId,1L,100,50)));

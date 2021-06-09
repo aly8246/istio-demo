@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -17,12 +18,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
+@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
-    /**
-     * redis数据库自定义key
-     */
-    public  static final String REDIS_KEY_DATABASE="mall";
 
+    /**
+     * redis操作类
+     * @param redisConnectionFactory redis连接工厂
+     */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisSerializer<Object> serializer = redisSerializer();
@@ -36,6 +38,9 @@ public class RedisConfig extends CachingConfigurerSupport {
         return redisTemplate;
     }
 
+    /**
+     * redis序列化类。使用json序列化
+     */
     @Bean
     public RedisSerializer<Object> redisSerializer() {
         //创建JSON序列化器
@@ -47,6 +52,10 @@ public class RedisConfig extends CachingConfigurerSupport {
         return serializer;
     }
 
+    /**
+     * redis缓存管理器
+     * @param redisConnectionFactory redis连接工厂
+     */
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);

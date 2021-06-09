@@ -1,5 +1,7 @@
 package com.aly8246.order.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 @TableName("istio_order")
 public class Order implements Serializable {
     @ApiModelProperty("订单ID")
+    @TableId(type = IdType.AUTO)
     private Long id;
     @ApiModelProperty("用户ID")
     private Long userId;

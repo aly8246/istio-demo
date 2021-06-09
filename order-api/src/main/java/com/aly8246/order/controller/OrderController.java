@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ import java.util.Random;
 @RequestMapping("order")
 @Api(value = "订单控制器")
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
     private final GoodsApi goodsApi;
     private final StockApi stockApi;
@@ -58,7 +60,7 @@ public class OrderController {
         stringList.add(stockDto.toString());
 
         stringList.add("3.生成订单数据");
-        Order order=new Order(IDUtil.nextSnowflakeId(), orderCreateDto.getUserId(), orderCreateDto.getGoodsId(),
+        Order order=new Order(null, orderCreateDto.getUserId(), orderCreateDto.getGoodsId(),
                 stockDto.getShopId(),goodsDto.getGoodsPrice(),new BigDecimal("0.0"),
                 Arrays.asList("未支付","已支付").get(new Random().nextInt(2)), LocalDateTime.now(),
                 Arrays.asList("微信","支付宝","paypal","银联").get(new Random().nextInt(4)));

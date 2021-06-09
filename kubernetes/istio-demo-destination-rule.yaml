@@ -15,3 +15,43 @@ spec:
       interval: 30s
       baseEjectionTime: 30s
       maxEjectionPercent: 100
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: istio-demo-goods-dr
+  namespace: istio-demo
+spec:
+  host: goods
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 2
+        maxRequestsPerConnection: 3
+    outlierDetection:
+      consecutiveErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: istio-demo-order-dr
+  namespace: istio-demo
+spec:
+  host: order
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 2
+        maxRequestsPerConnection: 3
+    outlierDetection:
+      consecutiveErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100
