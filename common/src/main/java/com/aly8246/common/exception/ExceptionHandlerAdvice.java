@@ -58,12 +58,28 @@ public class ExceptionHandlerAdvice {
     public Result<ServerExceptionResponse> handleFeignException(FeignException e,HttpServletRequest request,HttpServletResponse response){
         response.setStatus(RESOURCES_NOT_EXIST.getHttpCode());
 
+
+        //无健康存活实例
+        if (e.contentUTF8().contains("no healthy upstream")){
+            //TODO 需要线上报警
+            response.setStatus(SERVICE_NOT_UNAVAILABLE.getHttpCode());
+            return exceptionResponse(e,request);
+        }
+
+        //存在的健康实例容量已达上限
+        if (e.contentUTF8().contains(" upstream connect error or disconnect/reset before headers. reset reason: overflow")){
+
+            //TODO 需要通知kubernetes添加一个pod的副本
+            //TODO 调用kubernetes api server 或者使用命令行kubectl执行添加副本也可以
+            response.setStatus(SERVICE_NOT_UNAVAILABLE.getHttpCode());
+            return exceptionResponse(e,request);
+        }
+
         /*
          * 如果不包含"no healthy upstream" 如果是404或者503就向下传递
          * no healthy upstream 是由istio发起的无健康实例
          */
-        //TODO upstream connect error or disconnect/reset before headers. reset reason: connection failure
-        if(!e.contentUTF8().contains("no healthy upstream") && (e instanceof FeignException.NotFound || e instanceof FeignException.ServiceUnavailable)){
+        if((e instanceof FeignException.NotFound || e instanceof FeignException.ServiceUnavailable)){
             //获取result响应体
             Result<?> result = JsonUtil.jsonToObject(e.contentUTF8(), Result.class);
 
