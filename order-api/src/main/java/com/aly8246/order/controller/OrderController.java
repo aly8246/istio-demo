@@ -24,10 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("order")
@@ -48,27 +49,25 @@ public class OrderController {
             @ApiResponse(code = 202,message = "删除失败，用户不存在")
     })
     @PostMapping
-    public Result<List<String>> createOrder(@RequestBody@Validated OrderCreateDto orderCreateDto){
-        List<String> stringList=new LinkedList<>();
+    public Result<Order> createOrder(@RequestBody@Validated OrderCreateDto orderCreateDto){
+        CompletableFuture<GoodsDto> goodsDtoCompletableFuture = CompletableFuture.supplyAsync(() -> goodsApi.queryByGoodsId(orderCreateDto.getGoodsId()).result());
+        CompletableFuture<StockDto> stockDtoCompletableFuture = CompletableFuture.supplyAsync(() -> stockApi.deductGoodsStock(orderCreateDto.getGoodsId(), orderCreateDto.getNumber()).result());
 
-        stringList.add("1.获取商品信息");
-        GoodsDto goodsDto = goodsApi.queryByGoodsId(orderCreateDto.getGoodsId()).result();
-        stringList.add(goodsDto.toString());
+        CompletableFuture<Order> orderCompletableFuture = goodsDtoCompletableFuture.thenCombineAsync(
+                stockDtoCompletableFuture,
+                (
+                        (goodsDto, stockDto) -> {
+                            Order order = new Order(null, orderCreateDto.getUserId(), orderCreateDto.getGoodsId(), stockDto.getShopId(), goodsDto.getGoodsPrice(), new BigDecimal("0.0"), Arrays.asList("未支付", "已支付").get(new Random().nextInt(2)), new Date(), Arrays.asList("微信", "支付宝", "paypal", "银联").get(new Random().nextInt(4)));
+                            orderService.save(order);
+                            return order;
+                        })
+        );
 
-        stringList.add("2.扣除库存");
-        StockDto stockDto = stockApi.deductGoodsStock(orderCreateDto.getGoodsId(), orderCreateDto.getNumber()).result();
-        stringList.add(stockDto.toString());
 
-        stringList.add("3.生成订单数据");
-        Order order=new Order(null, orderCreateDto.getUserId(), orderCreateDto.getGoodsId(),
-                stockDto.getShopId(),goodsDto.getGoodsPrice(),new BigDecimal("0.0"),
-                Arrays.asList("未支付","已支付").get(new Random().nextInt(2)), LocalDateTime.now(),
-                Arrays.asList("微信","支付宝","paypal","银联").get(new Random().nextInt(4)));
-        stringList.add(order.toString());
+        Order order = orderCompletableFuture.get();
+        log.info(order.toString());
 
-        orderService.save(order);
-
-        return Result.ok(stringList);
+        return Result.ok(order);
     }
 
 }
