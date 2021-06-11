@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: order-config
+  name: order-cm
   namespace: istio-demo
 data:
   application-test.yml: |
@@ -19,7 +19,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: goods-config
+  name: goods-cm
   namespace: istio-demo
 data:
   application-test.yml: |
@@ -35,7 +35,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: stock-config
+  name: stock-cm
   namespace: istio-demo
 data:
   application-test.yml: |
