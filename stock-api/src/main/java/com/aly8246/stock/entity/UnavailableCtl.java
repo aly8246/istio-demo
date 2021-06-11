@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UnavailableCtl {
-    private Boolean unavailable;
+    private Boolean availableService;
     private Long serverId;
 }

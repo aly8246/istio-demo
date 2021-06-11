@@ -11,12 +11,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-
-import java.util.Random;
 
 import static com.aly8246.common.res.ResultCode.RESOURCES_NOT_EXIST;
 import static com.aly8246.common.res.ResultCode.SERVICE_NOT_UNAVAILABLE;
@@ -56,7 +53,7 @@ public class StockController {
         if (unavailableCtl!=null)
         {
             log.info(unavailableCtl.toString());
-            if (unavailableCtl.getUnavailable()){
+            if (!unavailableCtl.getAvailableService()){
                 throw new ServerException(SERVICE_NOT_UNAVAILABLE);
             }
         }
