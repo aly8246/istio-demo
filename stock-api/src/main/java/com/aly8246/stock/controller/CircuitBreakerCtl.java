@@ -29,7 +29,12 @@ public class CircuitBreakerCtl{
      */
     @Scheduled(cron = "0/10 * * * * ?")
     public void update(){
-        redisTemplate.opsForValue().set("unavailable_ctl:"+serverId,new UnavailableCtl(true,serverId),30L, TimeUnit.SECONDS);
+        UnavailableCtl unavailableCtl = (UnavailableCtl) redisTemplate.opsForValue().get("unavailable_ctl:" + CircuitBreakerCtl.serverId);
+        if (unavailableCtl!=null){
+            redisTemplate.opsForValue().set("unavailable_ctl:"+serverId,unavailableCtl,30L, TimeUnit.SECONDS);
+        }else {
+            redisTemplate.opsForValue().set("unavailable_ctl:"+serverId,new UnavailableCtl(true,serverId),30L, TimeUnit.SECONDS);
+        }
     }
 
 }
