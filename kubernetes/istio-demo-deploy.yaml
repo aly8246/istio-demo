@@ -53,6 +53,14 @@ spec:
           args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/*.yml"]
           ports:
             - containerPort: 8000
+              name: http
+              protocol: TCP
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+            - containerPort: 9779
+              name: prometheus
+              protocol: TCP
           securityContext:
             runAsUser: 1000
           volumeMounts:
@@ -134,6 +142,14 @@ spec:
           args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/*.yml"]
           ports:
             - containerPort: 8001
+              name: http
+              protocol: TCP
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+            - containerPort: 9779
+              name: prometheus
+              protocol: TCP
           securityContext:
             runAsUser: 1000
           volumeMounts:
@@ -214,6 +230,14 @@ spec:
           args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/*.yml"]
           ports:
             - containerPort: 8002
+              name: http
+              protocol: TCP
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+            - containerPort: 9779
+              name: prometheus
+              protocol: TCP
           securityContext:
             runAsUser: 1000
           volumeMounts:

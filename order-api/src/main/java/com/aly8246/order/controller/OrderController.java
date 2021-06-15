@@ -9,6 +9,8 @@ import com.aly8246.order.entity.StockDto;
 import com.aly8246.order.remote.GoodsApi;
 import com.aly8246.order.remote.StockApi;
 import com.aly8246.order.service.OrderService;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.prometheus.client.Counter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -40,6 +42,7 @@ public class OrderController {
     private final StockApi stockApi;
 
     private final OrderService orderService;
+    private final MeterRegistry meterRegistry;
 
     @SneakyThrows
     @ApiOperation(value = "创建订单")
@@ -67,6 +70,7 @@ public class OrderController {
         Order order = orderCompletableFuture.get();
         log.info(order.toString());
 
+        meterRegistry.counter("order").count();
         return Result.ok(order);
     }
 

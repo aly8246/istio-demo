@@ -6,15 +6,27 @@ spring:
     database: 0
     port: 6379
     password: 365tskj.dev123456
+  application:
+    name: stock-api
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+        exclude:
+          - env
+          - beans
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+      jmx:
+        enabled: true
   health:
     probes:
       enabled: true
-
-server:
-  unavailable: ${random.int[5000,6000]}

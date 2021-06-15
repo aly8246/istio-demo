@@ -1,12 +1,28 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: order-api
+
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+        exclude:
+          - env
+          - beans
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+      jmx:
+        enabled: true
   health:
     probes:
       enabled: true
