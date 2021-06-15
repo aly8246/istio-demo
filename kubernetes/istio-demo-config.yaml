@@ -30,6 +30,13 @@ data:
         url: r2dbc:mysql://120.55.78.23:3306/goods?useSSL=false
         username: root
         password: 365tskj.dev123456
+      redis:
+        host: 120.55.78.23
+        database: 0
+        port: 6379
+        password: 365tskj.dev123456
+      cache:
+        type: redis
 ---
 #库存模块配置
 apiVersion: v1
@@ -46,4 +53,9 @@ data:
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://120.55.78.23:3306/order?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
         username: root
+        password: 365tskj.dev123456
+      redis:
+        host: 120.55.78.23
+        database: 0
+        port: 6379
         password: 365tskj.dev123456

@@ -37,6 +37,10 @@ spec:
       version: v1
   template:
     metadata:
+#      annotations:
+#        prometheus.io/port: "8000"
+#        prometheus.io/scrape: "true"
+#        prometheus.io/path: "/actuator/prometheus"
       labels:
         app: order
         version: v1
@@ -50,16 +54,10 @@ spec:
         - name: order
           image: registry.cn-hangzhou.aliyuncs.com/istio-java/order-api:1.0.0
           imagePullPolicy: Always
-          args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/*.yml"]
+          args: [" --spring.profiles.active=dev,actuator --spring.config.additional-location=/etc/java/*.yml"]
           ports:
             - containerPort: 8000
               name: http
-              protocol: TCP
-            - containerPort: 8778
-              name: jolokia
-              protocol: TCP
-            - containerPort: 9779
-              name: prometheus
               protocol: TCP
           securityContext:
             runAsUser: 1000
@@ -115,6 +113,9 @@ kind: Deployment
 metadata:
   name: goods
   namespace: istio-demo
+  annotations:
+    prometheus.io/port: "8001"
+    prometheus.io/path: "/actuator/prometheus"
   labels:
     app: goods
     version: v1
@@ -139,16 +140,10 @@ spec:
         - name: goods
           image: registry.cn-hangzhou.aliyuncs.com/istio-java/goods-api:1.0.0
           imagePullPolicy: Always
-          args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/*.yml"]
+          args: [" --spring.profiles.active=dev,actuator --spring.config.additional-location=/etc/java/*.yml"]
           ports:
             - containerPort: 8001
               name: http
-              protocol: TCP
-            - containerPort: 8778
-              name: jolokia
-              protocol: TCP
-            - containerPort: 9779
-              name: prometheus
               protocol: TCP
           securityContext:
             runAsUser: 1000
@@ -214,6 +209,9 @@ spec:
       version: v1
   template:
     metadata:
+      annotations:
+        prometheus.io/port: "8002"
+        prometheus.io/path: "/actuator/prometheus"
       labels:
         app: stock
         version: v1
@@ -227,16 +225,10 @@ spec:
         - name: stock
           image: registry.cn-hangzhou.aliyuncs.com/istio-java/stock-api:1.0.0
           imagePullPolicy: Always
-          args: [" --spring.profiles.active=dev --spring.config.additional-location=/etc/java/*.yml"]
+          args: [" --spring.profiles.active=dev,actuator --spring.config.additional-location=/etc/java/*.yml"]
           ports:
             - containerPort: 8002
               name: http
-              protocol: TCP
-            - containerPort: 8778
-              name: jolokia
-              protocol: TCP
-            - containerPort: 9779
-              name: prometheus
               protocol: TCP
           securityContext:
             runAsUser: 1000

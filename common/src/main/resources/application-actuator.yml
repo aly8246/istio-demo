@@ -1,0 +1,44 @@
+management:
+  server:
+    port: ${server.port}
+  endpoints:
+    beans:
+      cache:
+        time-to-live: 5s
+    web:
+      exposure:
+        include: "*"
+        exclude:
+          - env
+          - beans
+      cors:
+        allowed-origins: "*"
+        allowed-methods: GET,POST,PUT,DELETE
+    jmx:
+      exposure:
+        include: "*"
+    prometheus:
+      enabled: true
+    auditevents:
+      enabled: true
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+      simple:
+        enabled: false
+  health:
+    probes:
+      enabled: true
+    redis:
+      enabled: true
+    db:
+      enabled: true
+  info:
+    git:
+      enabled: true
+      mode: full

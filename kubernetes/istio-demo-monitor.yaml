@@ -1,0 +1,53 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-demo-order-monitor
+  namespace: istio-demo
+spec:
+  endpoints:
+    - interval: 5s
+      port: http
+      path: /actuator/prometheus
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+      - istio-demo
+  selector:
+    matchLabels:
+      app: order
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-demo-goods-monitor
+  namespace: istio-demo
+spec:
+  endpoints:
+    - interval: 5s
+      port: http
+      path: /actuator/prometheus
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+      - istio-demo
+  selector:
+    matchLabels:
+      app: goods
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-demo-stock-monitor
+  namespace: istio-demo
+spec:
+  endpoints:
+    - interval: 5s
+      port: http
+      path: /actuator/prometheus
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+      - istio-demo
+  selector:
+    matchLabels:
+      app: stock

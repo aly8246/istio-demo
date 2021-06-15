@@ -1,34 +1,7 @@
+server:
+  port: 8001
 spring:
   profiles:
-    active: dev
+    active: dev,actuator
   application:
     name: goods-api
-  redis:
-    host: 120.55.78.23
-    database: 0
-    port: 6379
-    password: 365tskj.dev123456
-  cache:
-    type: redis
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-        exclude:
-          - env
-          - beans
-    health:
-      show-details: always
-  metrics:
-    tags:
-      application: ${spring.application.name}
-    export:
-      prometheus:
-        enabled: true
-      jmx:
-        enabled: true
-  health:
-    probes:
-      enabled: true
-
