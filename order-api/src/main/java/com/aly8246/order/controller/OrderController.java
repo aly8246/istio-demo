@@ -1,7 +1,6 @@
 package com.aly8246.order.controller;
 
 import com.aly8246.common.res.Result;
-import com.aly8246.common.util.IDUtil;
 import com.aly8246.order.entity.GoodsDto;
 import com.aly8246.order.entity.Order;
 import com.aly8246.order.entity.OrderCreateDto;
@@ -11,8 +10,8 @@ import com.aly8246.order.remote.StockApi;
 import com.aly8246.order.service.OrderService;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.prometheus.client.Counter;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -27,12 +26,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("order")
@@ -44,7 +41,8 @@ public class OrderController {
     private final StockApi stockApi;
 
     private final OrderService orderService;
-    private final MeterRegistry meterRegistry;
+
+    private final Counter counter= Metrics.counter("order.counter.total", "aa", "bb");
 
     @Timed
     @Counted
@@ -74,7 +72,7 @@ public class OrderController {
         Order order = orderCompletableFuture.get();
         log.info(order.toString());
 
-        meterRegistry.counter("order").increment();
+        counter.increment();
         return Result.ok(order);
     }
 

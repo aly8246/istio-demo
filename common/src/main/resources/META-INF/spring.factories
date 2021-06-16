@@ -1,10 +1,13 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.aly8246.common.spring.SpringBootInfo,\
+com.aly8246.common.util.CustomBeanDefinitionRegistryPostProcessor,\
 com.aly8246.common.web.JacksonWebConfiguration,\
 com.aly8246.common.web.SpringWebMvcConfiguration,\
 com.aly8246.common.exception.ExceptionHandlerAdvice,\
 com.aly8246.common.res.ResponseResultHandlerAdvice,\
 com.aly8246.common.feign.CustomFeignClientConfiguration,\
 com.aly8246.common.web.AsyncConfig,\
-com.aly8246.common.redis.RedisConfig
+com.aly8246.common.redis.RedisConfig,\
+com.aly8246.common.prometheus.PrometheusMetricsProperties,\
+com.aly8246.common.prometheus.PrometheusMetricsRegistry

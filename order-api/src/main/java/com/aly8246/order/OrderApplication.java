@@ -1,7 +1,11 @@
 package com.aly8246.order;
 
 import com.aly8246.common.swagger.EnableSwagger;
+import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
+import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;

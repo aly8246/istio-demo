@@ -19,6 +19,22 @@ management:
         include: "*"
     prometheus:
       enabled: true
+      metrics:
+        - class-name: io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics
+          enable: true
+          explain: "类加载器"
+        - class-name: io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
+          enable: true
+          explain: "jvm内存监控"
+        - class-name: io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
+          enable: true
+          explain: "jvm gc回收监控"
+        - class-name: io.micrometer.core.instrument.binder.jvm.JvmInfoMetrics
+          enable: true
+          explain: "jvm info监控"
+        - class-name: io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
+          enable: true
+          explain: "jvm 线程监控"
     auditevents:
       enabled: true
     health:
@@ -31,6 +47,8 @@ management:
         enabled: true
       simple:
         enabled: false
+      jmx:
+        enabled: true
   health:
     probes:
       enabled: true

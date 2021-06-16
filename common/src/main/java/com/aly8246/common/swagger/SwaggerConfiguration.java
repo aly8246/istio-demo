@@ -17,7 +17,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @EnableKnife4j
 @Import(BeanValidatorPluginsConfiguration.class)
-@ConditionalOnProperty(prefix = "spring",name = "profiles.active",havingValue = "dev")
+//@ConditionalOnProperty(prefix = "spring",name = "profiles.active",havingValue = "dev")
 @RequiredArgsConstructor
 public class SwaggerConfiguration {
     private final SpringBootInfo springBootInfo;
