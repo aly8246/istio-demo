@@ -21,20 +21,27 @@ management:
       enabled: true
       metrics:
         - class-name: io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics
-          enable: true
-          explain: "类加载器"
-        - class-name: io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
-          enable: true
-          explain: "jvm内存监控"
+          explain: "类加载器监控"
+        - class-name: io.micrometer.core.instrument.binder.jvm.JvmCompilationMetrics
+          explain: "jvm 编译策略监控"
         - class-name: io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
-          enable: true
           explain: "jvm gc回收监控"
+        - class-name: io.micrometer.core.instrument.binder.jvm.JvmHeapPressureMetrics
+          explain: "jvm 堆内存压力监控"
         - class-name: io.micrometer.core.instrument.binder.jvm.JvmInfoMetrics
-          enable: true
           explain: "jvm info监控"
+        - class-name: io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
+          explain: "jvm 内存监控"
         - class-name: io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
-          enable: true
           explain: "jvm 线程监控"
+        - class-name: io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics
+          explain: "系统内存监控"
+        - class-name: io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics
+          explain: "系统线程监控"
+        - class-name: io.micrometer.core.instrument.binder.system.ProcessorMetrics
+          explain: "系统进程监控"
+        - class-name: io.micrometer.core.instrument.binder.system.UptimeMetrics
+          explain: "系统进程创建时间监控"
     auditevents:
       enabled: true
     health:
