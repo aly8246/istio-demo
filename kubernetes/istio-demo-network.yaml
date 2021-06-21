@@ -50,3 +50,20 @@ spec:
             host: order
             port:
               number: 8000
+
+---
+#admin服务
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: istio-demo-admin-ingress
+  namespace: istio-demo
+spec:
+  rules:
+    - host: istio-demo-admin.test.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: admin
+              servicePort: 7071

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Import(SwaggerConfiguration.class)
-public @interface EnableSwagger {
+public @interface OpenApi {
     String service() default "default";
 
     String developer() default "default_developer";

@@ -1,6 +1,7 @@
 package com.aly8246.common.spring;
 
-import com.aly8246.common.swagger.EnableSwagger;
+import com.aly8246.common.swagger.OpenApi;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,12 +17,13 @@ import java.util.stream.Stream;
 @Data
 @RequiredArgsConstructor
 public class SpringBootInfo {
+    @JsonIgnore
     private final ApplicationContext applicationContext;
     private String service;
     private Object mainClass;
     private List<Annotation> mainAnnotations;
 
-    private EnableSwagger swagger;
+    private OpenApi api;
 
     @PostConstruct
     public void init() throws Exception {
@@ -32,13 +34,13 @@ public class SpringBootInfo {
         }
 
         this.mainClass= annotatedBeans.values().stream().findFirst().get();
-        String appName = this.mainClass.getClass().getAnnotation(EnableSwagger.class).service();
+        String appName = this.mainClass.getClass().getAnnotation(OpenApi.class).service();
         String defaultAppName = annotatedBeans.keySet().stream().findFirst().get();
 
         this.service=appName.equals("default")?defaultAppName:appName;
 
         this.mainAnnotations= Stream.of(this.mainClass.getClass().getAnnotations()).collect(Collectors.toList());
 
-        this.swagger=this.mainClass.getClass().getAnnotation(EnableSwagger.class);
+        this.api =this.mainClass.getClass().getAnnotation(OpenApi.class);
     }
 }

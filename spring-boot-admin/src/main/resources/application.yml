@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: admin-server
+#  cloud:
+#    kubernetes:
+#      discovery:
+#        primary-port-name: http
+#        service-labels:
+#          admin: enabled
+  cloud:
+    kubernetes:
+      enabled: true
+      discovery:
+        primary-port-name: http
+        service-labels:
+          admin: enabled
+
+server:
+  port: 7071

@@ -15,10 +15,11 @@ public enum ResultCode {
      * 资源不存在的状态码
      */
     RESOURCES_NOT_EXIST(404, "资源不存在",404),
+
     /**
      * 所有无法识别的异常默认的返回状态码
      */
-    SERVICE_ERROR(500, "服务器异常",503),
+    SERVICE_ERROR(500, "服务器异常",500),
 
     /**
      * 服务器不可用

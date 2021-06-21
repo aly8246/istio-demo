@@ -4,7 +4,6 @@ import com.aly8246.common.spring.SpringBootInfo;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
@@ -25,12 +24,12 @@ public class SwaggerConfiguration {
     @Bean(value = "defaultApi")
     public Docket defaultApi() throws Exception {
         String defaultAppName = springBootInfo.getService();
-        EnableSwagger enableSwagger = springBootInfo.getSwagger();
+        OpenApi openApi = springBootInfo.getApi();
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
                         .title("#365天使科技restful Api文档")
-                        .contact(new Contact(enableSwagger.developer()+"::"+enableSwagger.email(),"",""))
+                        .contact(new Contact(openApi.developer()+"::"+ openApi.email(),"",""))
                         .description("365天使科技restful Api文档")
                         .termsOfServiceUrl("http://www.365tskj.com/")
                         .version("1.0")

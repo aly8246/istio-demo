@@ -5,7 +5,7 @@ metadata:
   namespace: istio-demo
 spec:
   endpoints:
-    - interval: 5s
+    - interval: 10s
       port: http
       path: /actuator/prometheus
   jobLabel: app
@@ -23,7 +23,7 @@ metadata:
   namespace: istio-demo
 spec:
   endpoints:
-    - interval: 5s
+    - interval: 10s
       port: http
       path: /actuator/prometheus
   jobLabel: app
@@ -41,7 +41,7 @@ metadata:
   namespace: istio-demo
 spec:
   endpoints:
-    - interval: 5s
+    - interval: 10s
       port: http
       path: /actuator/prometheus
   jobLabel: app
