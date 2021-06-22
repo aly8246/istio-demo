@@ -1,5 +1,6 @@
 package com.aly8246.goods.controller;
 
+import com.aly8246.common.exception.ServerException;
 import com.aly8246.common.res.Result;
 import com.aly8246.goods.entity.Goods;
 import com.aly8246.goods.service.GoodsService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import static com.aly8246.common.res.ResultCode.GOODS_NOT_EXIST;
+import static com.aly8246.common.res.ResultCode.GOODS_UN_SELL;
 
 @RestController
 @Api(value = "商品控制器")
@@ -29,6 +31,9 @@ public class GoodsController {
     @GetMapping("{goodsId}")
     public Result<Goods> queryByGoodsId(@PathVariable Long goodsId){
         System.out.println("queryByGoodsId::goodsId = " + goodsId);
+        if (goodsId==3){
+            throw new ServerException(GOODS_UN_SELL);
+        }
         return Result.ok(goodsService.getById(goodsId));
     }
 

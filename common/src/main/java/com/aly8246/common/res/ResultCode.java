@@ -10,31 +10,27 @@ public enum ResultCode {
     /**
      * 成功返回的状态码
      */
-    SUCCESS(200, "success",200),
+    SUCCESS(200, "success"),
     /**
      * 资源不存在的状态码
      */
-    RESOURCES_NOT_EXIST(404, "资源不存在",404),
+    RESOURCES_NOT_EXIST(404, "资源不存在"),
 
     /**
      * 所有无法识别的异常默认的返回状态码
      */
-    SERVICE_ERROR(500, "服务器异常",500),
+    SERVICE_ERROR(500, "Internal Server Error"),
 
     /**
      * 服务器不可用
      */
-    SERVICE_NOT_UNAVAILABLE(503,"HTTP/1.1 503 Service Unavailable",503),
+    SERVICE_NOT_UNAVAILABLE(503,"HTTP/1.1 503 Service Unavailable"),
 
-    /**
-     * 收到了未知的状态码
-     */
-    NOT_EXIST_CODE(601, "未知状态码",503),
 
-    /**
-     * 商品不存在
-     */
-    GOODS_NOT_EXIST(700,"该商品不存在",200)
+    BUSINESS_EXCEPTION(600,"业务异常"),
+    GOODS_NOT_EXIST(601,"该商品不存在"),
+    STOCK_NOT_ENOUGH(602,"商品库存不足"),
+    GOODS_UN_SELL(603,"商品暂时不允许购买")
     ;
 
     /**
@@ -46,11 +42,6 @@ public enum ResultCode {
      */
     private final String msg;
 
-    /**
-     * http状态码
-     */
-    private final int httpCode;
-
     public static ResultCode getByCode(int code){
         ResultCode[] ResultCodeEnums = values();
         for (ResultCode resultCode : ResultCodeEnums) {
@@ -58,6 +49,6 @@ public enum ResultCode {
                 return resultCode;
             }
         }
-        throw new ServerException(NOT_EXIST_CODE);
+        throw new RuntimeException("未知状态码");
     }
 }

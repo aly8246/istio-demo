@@ -15,8 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import static com.aly8246.common.res.ResultCode.RESOURCES_NOT_EXIST;
-import static com.aly8246.common.res.ResultCode.SERVICE_NOT_UNAVAILABLE;
+import static com.aly8246.common.res.ResultCode.*;
 
 @RestController
 @RequestMapping("stock")
@@ -54,8 +53,13 @@ public class StockController {
         {
             log.info(unavailableCtl.toString());
             if (!unavailableCtl.getAvailableService()){
-                throw new ServerException(SERVICE_NOT_UNAVAILABLE);
+                //发起未知异常
+                throw new RuntimeException();
             }
+        }
+
+        if(goodsNumber>999){
+            throw new ServerException(STOCK_NOT_ENOUGH);
         }
 
         System.out.println("deductGoodsStock::goodsId = " + goodsId + ", goodsNumber = " + goodsNumber);
