@@ -26,11 +26,12 @@ public enum ResultCode {
      */
     SERVICE_NOT_UNAVAILABLE(503,"HTTP/1.1 503 Service Unavailable"),
 
+    ERROR_OPERATE(600,"错误操作"),
 
-    BUSINESS_EXCEPTION(600,"业务异常"),
-    GOODS_NOT_EXIST(601,"该商品不存在"),
-    STOCK_NOT_ENOUGH(602,"商品库存不足"),
-    GOODS_UN_SELL(603,"商品暂时不允许购买")
+    BUSINESS_EXCEPTION(700,"业务异常"),
+    GOODS_NOT_EXIST(701,"该商品不存在"),
+    STOCK_NOT_ENOUGH(702,"商品库存不足"),
+    GOODS_UN_SELL(703,"商品暂时不允许购买")
     ;
 
     /**

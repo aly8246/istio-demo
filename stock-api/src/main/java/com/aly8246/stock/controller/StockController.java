@@ -62,7 +62,7 @@ public class StockController {
             throw new ServerException(STOCK_NOT_ENOUGH);
         }
 
-        System.out.println("deductGoodsStock::goodsId = " + goodsId + ", goodsNumber = " + goodsNumber);
+        log.info("deductGoodsStock::goodsId = " + goodsId + ", goodsNumber = " + goodsNumber);
         return Mono.just(Result.ok(new Stock(goodsId,1L,100,50)));
     }
 

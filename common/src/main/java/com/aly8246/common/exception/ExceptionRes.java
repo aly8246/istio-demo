@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class ExceptionRes {
     private String service;
     private String uri;
-    private String errorMsg;
+    private Object errorMsg;
 }

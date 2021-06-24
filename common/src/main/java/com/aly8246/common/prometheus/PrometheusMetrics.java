@@ -18,7 +18,7 @@ public class PrometheusMetrics {
     //指标类名
     private String className;
     //指标是否开启，默认开启
-    private Boolean enable;
+    private Boolean enabled;
     //指标信息
     private String explain;
 

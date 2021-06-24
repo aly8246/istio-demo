@@ -9,13 +9,25 @@ import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Server;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.aly8246.common.res.ResultCode.*;
 
@@ -39,6 +51,24 @@ public class ExceptionHandlerAdvice {
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
 
         return result(SERVICE_NOT_UNAVAILABLE.getCode(), SERVICE_NOT_UNAVAILABLE.getMsg(), exceptionRes);
+    }
+
+    /**
+     * 请求method不支持
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Result<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e){
+        ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
+        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+    }
+
+    /**
+     * json转换异常
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Result<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
+        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
     }
 
 
@@ -92,7 +122,7 @@ public class ExceptionHandlerAdvice {
 
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
 
-        //响应http状态码大于等于600 说明是业务异常，直接抛出
+        //响应http状态码大于等于700 说明是业务异常，直接抛出
         if (code.getCode()>= BUSINESS_EXCEPTION.getCode()){
             return notAccept(code.getCode(),code.getMsg(),exceptionRes);
         }
@@ -108,7 +138,7 @@ public class ExceptionHandlerAdvice {
 
     /**
      * feign接受到的异常
-     * @param e 404 600 other:503
+     * @param e 404 700 other:503
      * @return 异常响应
      */
     private Result<?> handleAllFeignException(FeignException e){
@@ -119,7 +149,7 @@ public class ExceptionHandlerAdvice {
             //404 由Exception和ExecutionException捕获的feign 404资源不存在
             response.setStatus(RESOURCES_NOT_EXIST.getCode());
         }else if (e.status()>=BUSINESS_EXCEPTION.getCode()){
-            //大于等于600 业务异常,抛出业务异常数据,然后传递到前端
+            //大于等于700 业务异常,抛出业务异常数据,然后传递到前端
             response.setStatus(BUSINESS_EXCEPTION.getCode());
         } else {
             //503 未处理的feign异常,直接抛出,并且由istio接管熔断
@@ -139,4 +169,67 @@ public class ExceptionHandlerAdvice {
         response.setStatus(BUSINESS_EXCEPTION.getCode());
         return new Result<>(code,msg,data);
     }
+
+    /**
+     * 参数校验异常
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
+        System.out.println(request.getRequestURI());
+        BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
+        log.warn(methodArgumentNotValidException.getMessage());
+        LinkedHashMap<String, String> result = IntStream
+                .range(0, bindingResult.getFieldErrorCount())
+                .mapToObj(i -> bindingResult.getFieldErrors()
+                        .get(i))
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        FieldError::toString,
+                        (k, v) -> v,
+                        LinkedHashMap::new));
+        ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), result);
+
+        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+    }
+
+    /**
+     * 参数校验异常
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Result<Object> handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
+        System.out.println(request.getRequestURI());
+        log.warn(constraintViolationException.getMessage());
+        LinkedHashMap<String, String> result = constraintViolationException.getConstraintViolations()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getPropertyPath().toString().split("\\.")[1],
+                        ConstraintViolation::getMessage,
+                        (a, b) -> b,
+                        LinkedHashMap::new));
+        ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), result);
+
+        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+    }
+
+    /**
+     * 参数校验异常
+     */
+    @ExceptionHandler(BindException.class)
+    public Result<Object> handleBindException(BindException bindException) {
+        System.out.println(request.getRequestURI());
+        log.warn(bindException.getMessage());
+        BindingResult bindingResult = bindException.getBindingResult();
+        LinkedHashMap<String, String> result= IntStream
+                .range(0, bindingResult.getFieldErrorCount())
+                .mapToObj(i -> bindingResult.getFieldErrors()
+                        .get(i))
+                .collect(Collectors.toMap(FieldError::getField,
+                        e -> Objects.requireNonNull(e.getDefaultMessage()).split(":")[1],
+                        (a, b) -> b,
+                        LinkedHashMap::new));
+
+        ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), result);
+
+        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+    }
+
 }

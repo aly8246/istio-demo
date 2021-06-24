@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import static com.aly8246.common.res.ResultCode.GOODS_UN_SELL;
 @Api(value = "商品控制器")
 @RequestMapping("goods/")
 @RequiredArgsConstructor
+@Slf4j
 public class GoodsController {
     private final GoodsService goodsService;
 
@@ -30,7 +32,7 @@ public class GoodsController {
     @ApiOperation("根据商品ID查询商品详情")
     @GetMapping("{goodsId}")
     public Result<Goods> queryByGoodsId(@PathVariable Long goodsId){
-        System.out.println("queryByGoodsId::goodsId = " + goodsId);
+        log.info("queryByGoodsId::goodsId = " + goodsId);
         if (goodsId==3){
             throw new ServerException(GOODS_UN_SELL);
         }
