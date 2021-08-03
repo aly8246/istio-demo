@@ -6,7 +6,7 @@ metadata:
   namespace: istio-demo
 spec:
   rules:
-    - host: order.k8s.com
+    - host: orderapp1.local.com
       http:
         paths:
           - path: /
@@ -34,7 +34,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: istio-demo-virual-service
+  name: istio-demo-order-virual-service
   namespace: istio-demo
 spec:
   hosts:
@@ -44,7 +44,7 @@ spec:
   http:
     - match:
         - uri:
-            exact: /order
+            exact: /api/order/order/
       route:
         - destination:
             host: order
@@ -52,18 +52,39 @@ spec:
               number: 8000
 
 ---
-#admin服务
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
 metadata:
-  name: istio-demo-admin-ingress
+  name: istio-demo-goods-virual-service
   namespace: istio-demo
 spec:
-  rules:
-    - host: istio-demo-admin.test.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: admin
-              servicePort: 7071
+  hosts:
+    - "*"
+  gateways:
+    - istio-demo-gateway
+  http:
+    - match:
+        - uri:
+            exact: /api/goods/goods/
+      route:
+        - destination:
+            host: goods
+            port:
+              number: 8001
+
+---
+##admin服务
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#  name: istio-demo-admin-ingress
+#  namespace: istio-demo
+#spec:
+#  rules:
+#    - host: istio-demo-admin.test.com
+#      http:
+#        paths:
+#          - path: /
+#            backend:
+#              serviceName: admin
+#              servicePort: 7071

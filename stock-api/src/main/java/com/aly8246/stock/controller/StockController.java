@@ -18,52 +18,51 @@ import reactor.core.publisher.Mono;
 import static com.aly8246.common.res.ResultCode.*;
 
 @RestController
-@RequestMapping("stock")
+@RequestMapping("api/stock/stock")
 @Api(value = "库存控制器")
 @RequiredArgsConstructor
 @Slf4j
 public class StockController {
-    private final RedisTemplate<String,Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @ApiOperation(value = "查询产品库存")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "goodsId",value = "商品ID",required = true,paramType = "path")
+            @ApiImplicitParam(name = "goodsId", value = "商品ID", required = true, paramType = "path")
     })
     @GetMapping("{goodsId}")
-    public Mono<Result<Stock>> queryGoodsStock(@PathVariable("goodsId") Long goodsId){
-        if (goodsId==2L){
+    public Mono<Result<Stock>> queryGoodsStock(@PathVariable("goodsId") Long goodsId) {
+        if (goodsId == 2L) {
             throw new ServerException(RESOURCES_NOT_EXIST);
         }
-        return Mono.just(Result.ok(new Stock(goodsId,1L,100,50)));
+        return Mono.just(Result.ok(new Stock(goodsId, 1L, 100, 50)));
     }
 
     @SneakyThrows
     @ApiOperation(value = "扣除产品库存")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "goodsId",value = "商品ID",example = "1",required = true,paramType = "path"),
-            @ApiImplicitParam(name = "goodsNumber",value = "商品数量",example = "1",required = true,paramType = "path")
+            @ApiImplicitParam(name = "goodsId", value = "商品ID", example = "1", required = true, paramType = "path"),
+            @ApiImplicitParam(name = "goodsNumber", value = "商品数量", example = "1", required = true, paramType = "path")
     })
     @PutMapping("{goodsId}::{goodsNumber}")
-    public Mono<Result<Stock>> deductGoodsStock(@PathVariable("goodsId") Long goodsId,@PathVariable("goodsNumber") Integer goodsNumber){
+    public Mono<Result<Stock>> deductGoodsStock(@PathVariable("goodsId") Long goodsId, @PathVariable("goodsNumber") Integer goodsNumber) {
 
         //每次都查询redis。看看要不要开启503
         UnavailableCtl unavailableCtl = (UnavailableCtl) redisTemplate.opsForValue().get("unavailable_ctl:" + CircuitBreakerCtl.serverId);
 
-        if (unavailableCtl!=null)
-        {
+        if (unavailableCtl != null) {
             log.info(unavailableCtl.toString());
-            if (!unavailableCtl.getAvailableService()){
+            if (!unavailableCtl.getAvailableService()) {
                 //发起未知异常
                 throw new RuntimeException();
             }
         }
 
-        if(goodsNumber>999){
+        if (goodsNumber > 999) {
             throw new ServerException(STOCK_NOT_ENOUGH);
         }
 
         log.info("deductGoodsStock::goodsId = " + goodsId + ", goodsNumber = " + goodsNumber);
-        return Mono.just(Result.ok(new Stock(goodsId,1L,100,50)));
+        return Mono.just(Result.ok(new Stock(goodsId, 1L, 100, 50)));
     }
 
 }

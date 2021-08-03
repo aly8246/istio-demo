@@ -24,15 +24,16 @@ public enum ResultCode {
     /**
      * 服务器不可用
      */
-    SERVICE_NOT_UNAVAILABLE(503,"HTTP/1.1 503 Service Unavailable"),
+    SERVICE_NOT_UNAVAILABLE(503, "HTTP/1.1 503 Service Unavailable"),
 
-    ERROR_OPERATE(600,"错误操作"),
+    NO_HEALTHY_UPSTREAM(601, "上游无存活实例，关闭"),
 
-    BUSINESS_EXCEPTION(700,"业务异常"),
-    GOODS_NOT_EXIST(701,"该商品不存在"),
-    STOCK_NOT_ENOUGH(702,"商品库存不足"),
-    GOODS_UN_SELL(703,"商品暂时不允许购买")
-    ;
+    ERROR_OPERATE(600, "错误操作"),
+
+    BUSINESS_EXCEPTION(700, "业务异常"),
+    GOODS_NOT_EXIST(701, "该商品不存在"),
+    STOCK_NOT_ENOUGH(702, "商品库存不足"),
+    GOODS_UN_SELL(703, "商品暂时不允许购买");
 
     /**
      * 状态码
@@ -43,10 +44,10 @@ public enum ResultCode {
      */
     private final String msg;
 
-    public static ResultCode getByCode(int code){
+    public static ResultCode getByCode(int code) {
         ResultCode[] ResultCodeEnums = values();
         for (ResultCode resultCode : ResultCodeEnums) {
-            if (resultCode.code==code) {
+            if (resultCode.code == code) {
                 return resultCode;
             }
         }

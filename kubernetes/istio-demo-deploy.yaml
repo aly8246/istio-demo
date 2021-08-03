@@ -49,9 +49,9 @@ spec:
             name: order-cm
       containers:
         - name: order
-          image: registry.cn-hangzhou.aliyuncs.com/istio-java/order-api:1.0.0
+          image: registry.cn-hangzhou.aliyuncs.com/365tskj-backend-old/order-api:latest
           imagePullPolicy: Always
-          args: [" --spring.profiles.active=test,actuator --spring.config.additional-location=/etc/java/*.yml"]
+          args: [ " --spring.profiles.active=test,actuator --spring.config.additional-location=/etc/java/*.yml" ]
           ports:
             - containerPort: 8000
               name: http
@@ -60,8 +60,8 @@ spec:
             runAsUser: 1000
           volumeMounts:
             - name: order-cm-volume
-              mountPath: /etc/java/application-dev.yml
-              subPath: application-dev.yml
+              mountPath: /etc/java/application-test.yml
+              subPath: application-test.yml
           livenessProbe:
             httpGet:
               path: "/actuator/health/liveness"
@@ -133,9 +133,9 @@ spec:
             name: goods-cm
       containers:
         - name: goods
-          image: registry.cn-hangzhou.aliyuncs.com/istio-java/goods-api:1.0.0
+          image: registry.cn-hangzhou.aliyuncs.com/365tskj-backend-old/goods-api:latest
           imagePullPolicy: Always
-          args: [" --spring.profiles.active=test,actuator --spring.config.additional-location=/etc/java/*.yml"]
+          args: [ " --spring.profiles.active=test,actuator --spring.config.additional-location=/etc/java/*.yml" ]
           ports:
             - containerPort: 8001
               name: http
@@ -144,8 +144,8 @@ spec:
             runAsUser: 1000
           volumeMounts:
             - name: goods-cm-volume
-              mountPath: /etc/java/application-dev.yml
-              subPath: application-dev.yml
+              mountPath: /etc/java/application-test.yml
+              subPath: application-test.yml
           livenessProbe:
             httpGet:
               path: "/actuator/health/liveness"
@@ -216,9 +216,9 @@ spec:
             name: stock-cm
       containers:
         - name: stock
-          image: registry.cn-hangzhou.aliyuncs.com/istio-java/stock-api:1.0.0
+          image: registry.cn-hangzhou.aliyuncs.com/365tskj-backend-old/stock-api:latest
           imagePullPolicy: Always
-          args: [" --spring.profiles.active=test,actuator --spring.config.additional-location=/etc/java/*.yml"]
+          args: [ " --spring.profiles.active=test,actuator --spring.config.additional-location=/etc/java/*.yml" ]
           ports:
             - containerPort: 8002
               name: http
@@ -227,8 +227,8 @@ spec:
             runAsUser: 1000
           volumeMounts:
             - name: stock-cm-volume
-              mountPath: /etc/java/application-dev.yml
-              subPath: application-dev.yml
+              mountPath: /etc/java/application-test.yml
+              subPath: application-test.yml
           livenessProbe:
             httpGet:
               path: "/actuator/health/liveness"
@@ -247,59 +247,3 @@ spec:
             timeoutSeconds: 3
             successThreshold: 1
             failureThreshold: 5
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: admin
-  namespace: istio-demo
-  labels:
-    app: admin
-    service: admin
-    admin: enabled
-spec:
-  ports:
-    - port: 7071
-      name: http
-  selector:
-    app: admin
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: admin-account
-  namespace: istio-demo
-  labels:
-    account: admin
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: admin
-  namespace: istio-demo
-  labels:
-    app: admin
-    version: v1
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: admin
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: admin
-        version: v1
-    spec:
-      serviceAccountName: admin-account
-      containers:
-        - name: admin
-          image: registry.cn-hangzhou.aliyuncs.com/istio-java/spring-boot-admin:1.0.0
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 7071
-              name: http
-              protocol: TCP
-          securityContext:
-            runAsUser: 1000

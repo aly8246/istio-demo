@@ -22,7 +22,7 @@ import static com.aly8246.common.res.ResultCode.GOODS_UN_SELL;
 
 @RestController
 @Api(value = "商品控制器")
-@RequestMapping("goods/")
+@RequestMapping("/api/goods/goods/")
 @RequiredArgsConstructor
 @Slf4j
 public class GoodsController {
@@ -31,9 +31,9 @@ public class GoodsController {
     @SneakyThrows
     @ApiOperation("根据商品ID查询商品详情")
     @GetMapping("{goodsId}")
-    public Result<Goods> queryByGoodsId(@PathVariable Long goodsId){
+    public Result<Goods> queryByGoodsId(@PathVariable Long goodsId) {
         log.info("queryByGoodsId::goodsId = " + goodsId);
-        if (goodsId==3){
+        if (goodsId == 3) {
             throw new ServerException(GOODS_UN_SELL);
         }
         return Result.ok(goodsService.getById(goodsId));

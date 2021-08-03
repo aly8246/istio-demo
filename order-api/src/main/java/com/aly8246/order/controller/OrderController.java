@@ -20,10 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -32,7 +29,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("order")
+@RequestMapping("/api/order/order/")
 @Api(value = "订单控制器")
 @RequiredArgsConstructor
 @Slf4j
@@ -42,7 +39,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    private final Counter counter= Metrics.counter("order.counter.total", "aa", "bb");
+    private final Counter counter = Metrics.counter("order.counter.total", "aa", "bb");
 
     @Timed
     @Counted
@@ -50,11 +47,11 @@ public class OrderController {
     @ApiOperation(value = "创建订单")
     @ApiResponses({
             //code重复的情况下，第一个声明的生效。
-            @ApiResponse(code = 200,message = "删除成功" ),
-            @ApiResponse(code = 202,message = "删除失败，用户不存在")
+            @ApiResponse(code = 200, message = "删除成功"),
+            @ApiResponse(code = 202, message = "删除失败，用户不存在")
     })
     @PostMapping
-    public Result<Order> createOrder(@RequestBody@Validated OrderCreateDto orderCreateDto){
+    public Result<Order> createOrder(@RequestBody @Validated OrderCreateDto orderCreateDto) {
         CompletableFuture<GoodsDto> goodsDtoCompletableFuture = CompletableFuture.supplyAsync(() -> goodsApi.queryByGoodsId(orderCreateDto.getGoodsId()).result());
         CompletableFuture<StockDto> stockDtoCompletableFuture = CompletableFuture.supplyAsync(() -> stockApi.deductGoodsStock(orderCreateDto.getGoodsId(), orderCreateDto.getNumber()).result());
 
@@ -74,6 +71,12 @@ public class OrderController {
 
         counter.increment();
         return Result.ok(order);
+    }
+
+    @ApiOperation(value = "查询订单")
+    @GetMapping("{orderId}")
+    public Result<Order> queryOrderById(@PathVariable("orderId") String orderId) {
+        return Result.ok(orderService.getById(orderId));
     }
 
 }

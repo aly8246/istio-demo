@@ -44,9 +44,9 @@ public class ExceptionHandlerAdvice {
      * 处理未捕获的Exception
      */
     @ExceptionHandler(Exception.class)
-    public Result<Object> handleException(Exception e){
-        if (e.getMessage()!=null) log.error(e.getMessage(),e);
-        else log.error("unknown exception message!",e);
+    public Result<Object> handleException(Exception e) {
+        if (e.getMessage() != null) log.error(e.getMessage(), e);
+        else log.error("unknown exception message!", e);
 
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
 
@@ -57,9 +57,9 @@ public class ExceptionHandlerAdvice {
      * 请求method不支持
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public Result<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e){
+    public Result<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
-        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+        return result(ERROR_OPERATE.getCode(), ERROR_OPERATE.getMsg(), exceptionRes);
     }
 
     /**
@@ -68,7 +68,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
-        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+        return result(ERROR_OPERATE.getCode(), ERROR_OPERATE.getMsg(), exceptionRes);
     }
 
 
@@ -76,13 +76,13 @@ public class ExceptionHandlerAdvice {
      * 线程池执行异常
      */
     @ExceptionHandler(ExecutionException.class)
-    public Result<?> handleExecutionException(ExecutionException e){
-        log.error(e.getMessage(),e);
+    public Result<?> handleExecutionException(ExecutionException e) {
+        log.error(e.getMessage(), e);
 
         Throwable cause = e.getCause();
 
         //线程池执行包装feign异常
-        if (cause instanceof FeignException){
+        if (cause instanceof FeignException) {
             return handleAllFeignException((FeignException) cause);
         }
 
@@ -100,35 +100,37 @@ public class ExceptionHandlerAdvice {
     /**
      * 处理feign异常并且抛出自定义404
      * 主要是处理远程调用以后接收到的404响应
+     *
      * @param e feign异常
      */
     @ExceptionHandler(FeignException.class)
-    public Result<?> handleFeignException(FeignException e){
-       return handleAllFeignException(e);
+    public Result<?> handleFeignException(FeignException e) {
+        return handleAllFeignException(e);
     }
 
     /**
      * 处理业务异常BaseException
      * 包含的404主要是发起404响应
+     *
      * @param e 业务异常
      * @return 统一响应体
      */
     @ExceptionHandler(ServerException.class)
-    public Result<?> handleBaseException(ServerException e){
+    public Result<?> handleBaseException(ServerException e) {
         log.error(e.getMessage());
 
         //从异常中获取枚举类
-        ResultCode code=e.getCode();
+        ResultCode code = e.getCode();
 
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), e.getMessage());
 
         //响应http状态码大于等于700 说明是业务异常，直接抛出
-        if (code.getCode()>= BUSINESS_EXCEPTION.getCode()){
-            return notAccept(code.getCode(),code.getMsg(),exceptionRes);
+        if (code.getCode() >= BUSINESS_EXCEPTION.getCode()) {
+            return notAccept(code.getCode(), code.getMsg(), exceptionRes);
         }
 
         //响应http状态码为404 说明是资源不存在，直接抛出
-        if(code.getCode()== RESOURCES_NOT_EXIST.getCode()){
+        if (code.getCode() == RESOURCES_NOT_EXIST.getCode()) {
             return result(RESOURCES_NOT_EXIST.getCode(), RESOURCES_NOT_EXIST.getMsg(), exceptionRes);
         }
 
@@ -138,17 +140,24 @@ public class ExceptionHandlerAdvice {
 
     /**
      * feign接受到的异常
+     *
      * @param e 404 700 other:503
      * @return 异常响应
      */
-    private Result<?> handleAllFeignException(FeignException e){
+    private Result<?> handleAllFeignException(FeignException e) {
+        if (e instanceof FeignException.ServiceUnavailable) {
+            //503 上游服务无正常实例，开启熔断
+            response.setStatus(NO_HEALTHY_UPSTREAM.getCode());
+            return Result.res(NO_HEALTHY_UPSTREAM.getCode(), "上游服务中断", null);
+        }
+
         //取出原本的错误异常，转为result对象
         Result<?> result = JsonUtil.jsonToObject(e.contentUTF8(), Result.class);
 
-        if(e instanceof FeignException.NotFound){
+        if (e instanceof FeignException.NotFound) {
             //404 由Exception和ExecutionException捕获的feign 404资源不存在
             response.setStatus(RESOURCES_NOT_EXIST.getCode());
-        }else if (e.status()>=BUSINESS_EXCEPTION.getCode()){
+        } else if (e.status() >= BUSINESS_EXCEPTION.getCode()) {
             //大于等于700 业务异常,抛出业务异常数据,然后传递到前端
             response.setStatus(BUSINESS_EXCEPTION.getCode());
         } else {
@@ -160,14 +169,14 @@ public class ExceptionHandlerAdvice {
     }
 
 
-    public Result<Object> result(int code,String msg,Object data){
+    public Result<Object> result(int code, String msg, Object data) {
         response.setStatus(code);
-        return new Result<>(code,msg,data);
+        return new Result<>(code, msg, data);
     }
 
-    public Result<Object> notAccept(int code,String msg,Object data){
+    public Result<Object> notAccept(int code, String msg, Object data) {
         response.setStatus(BUSINESS_EXCEPTION.getCode());
-        return new Result<>(code,msg,data);
+        return new Result<>(code, msg, data);
     }
 
     /**
@@ -189,7 +198,7 @@ public class ExceptionHandlerAdvice {
                         LinkedHashMap::new));
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), result);
 
-        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+        return result(ERROR_OPERATE.getCode(), ERROR_OPERATE.getMsg(), exceptionRes);
     }
 
     /**
@@ -207,7 +216,7 @@ public class ExceptionHandlerAdvice {
                         LinkedHashMap::new));
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), result);
 
-        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+        return result(ERROR_OPERATE.getCode(), ERROR_OPERATE.getMsg(), exceptionRes);
     }
 
     /**
@@ -218,7 +227,7 @@ public class ExceptionHandlerAdvice {
         System.out.println(request.getRequestURI());
         log.warn(bindException.getMessage());
         BindingResult bindingResult = bindException.getBindingResult();
-        LinkedHashMap<String, String> result= IntStream
+        LinkedHashMap<String, String> result = IntStream
                 .range(0, bindingResult.getFieldErrorCount())
                 .mapToObj(i -> bindingResult.getFieldErrors()
                         .get(i))
@@ -229,7 +238,7 @@ public class ExceptionHandlerAdvice {
 
         ExceptionRes exceptionRes = new ExceptionRes(springBootInfo.getService(), request.getRequestURI(), result);
 
-        return result(ERROR_OPERATE.getCode(),ERROR_OPERATE.getMsg(),exceptionRes);
+        return result(ERROR_OPERATE.getCode(), ERROR_OPERATE.getMsg(), exceptionRes);
     }
 
 }

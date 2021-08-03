@@ -1,213 +1,285 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.0</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-	<groupId>com.aly8246</groupId>
-	<artifactId>istio-demo</artifactId>
-	<version>1.0.0</version>
-	<name>istio-demo</name>
-	<packaging>pom</packaging>
-	<description>service mesh demo</description>
+    <groupId>com.aly8246</groupId>
+    <artifactId>istio-demo</artifactId>
+    <version>1.0.0</version>
+    <name>istio-demo</name>
+    <packaging>pom</packaging>
+    <description>service mesh demo</description>
 
-	<modules>
-		<module>common</module>
-		<module>order-api</module>
-		<module>stock-api</module>
-		<module>goods-api</module>
-		<module>spring-boot-admin</module>
-	</modules>
+    <modules>
+        <module>common</module>
+        <module>order-api</module>
+        <module>stock-api</module>
+        <module>goods-api</module>
+        <module>spring-boot-admin</module>
+    </modules>
 
-	<properties>
-		<!--主版本号.次版本号.修订版本号-->
-		<revision>1.0.0</revision>
+    <properties>
+        <!--主版本号.次版本号.修订版本号-->
+        <revision>1.0.0</revision>
 
-		<env>dev</env>
-		<build.custom.finalName>${project.artifactId}-${project.version}-SNAPSHOT</build.custom.finalName>
+        <env>dev</env>
+        <!--        <build.custom.finalName>${project.artifactId}-${project.version}-SNAPSHOT</build.custom.finalName>-->
 
-		<!--docker-->
-		<docker.project.name>istio-java</docker.project.name>
-		<docker.registry>registry.cn-hangzhou.aliyuncs.com</docker.registry>
-		<docker.username>306756237@qq.com</docker.username>
-		<docker.password>306756237@qq.com</docker.password>
-
-		<java.version>8</java.version>
-		<spring-boot.version>2.5.0</spring-boot.version>
-		<spring-native.version>0.10.0-SNAPSHOT</spring-native.version>
-	</properties>
+        <!--        &lt;!&ndash;docker&ndash;&gt;-->
+        <!--        <docker.project.name>istio-java</docker.project.name>-->
+        <!--        <docker.registry>registry.cn-hangzhou.aliyuncs.com</docker.registry>-->
+        <!--        <docker.username>306756237@qq.com</docker.username>-->
+        <!--        <docker.password>306756237@qq.com</docker.password>-->
 
 
-	<dependencies>
-		<dependency>
-			<groupId>com.github.xiaoymin</groupId>
-			<artifactId>knife4j-spring-boot-starter</artifactId>
-		</dependency>
+        <build.cmd.path>build.bat</build.cmd.path>
+        <build.docker.registry>registry.cn-hangzhou.aliyuncs.com</build.docker.registry>
+        <build.docker.project>365tskj-backend-old</build.docker.project>
+        <build.docker.username>qmkcdata</build.docker.username>
+        <build.docker.password>qmkc1010</build.docker.password>
+        <build.docker.credential>--username=${build.docker.username} --password=${build.docker.password}
+            ${build.docker.registry}
+        </build.docker.credential>
 
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-prometheus</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-jmx</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jolokia</groupId>
-			<artifactId>jolokia-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.github.mweirauch</groupId>
-			<artifactId>micrometer-jvm-extras</artifactId>
-			<version>0.1.2</version>
-		</dependency>
+        <java.version>8</java.version>
+        <spring-boot.version>2.5.0</spring-boot.version>
+        <spring-native.version>0.10.0-SNAPSHOT</spring-native.version>
+    </properties>
 
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+        </dependency>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.github.xiaoymin</groupId>
-				<artifactId>knife4j-spring-boot-starter</artifactId>
-				<version>3.0.2</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.xiaoymin</groupId>
-				<artifactId>knife4j-micro-spring-boot-starter</artifactId>
-				<version>3.0.2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-openfeign</artifactId>
-				<version>3.0.3</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-native</artifactId>
-				<version>0.10.0-SNAPSHOT</version>
-			</dependency>
-
-			<!--spring r2dbc数据库依赖-->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-r2dbc</artifactId>
-				<version>${spring-boot.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.baomidou</groupId>
-				<artifactId>mybatis-plus-boot-starter</artifactId>
-				<version>3.4.3</version>
-			</dependency>
-			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>5.1.49</version>
-			</dependency>
-
-			<dependency>
-				<groupId>de.codecentric</groupId>
-				<artifactId>spring-boot-admin-starter-client</artifactId>
-				<version>2.4.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-kubernetes-client</artifactId>
-				<version>2.0.3</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-jmx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.mweirauch</groupId>
+            <artifactId>micrometer-jvm-extras</artifactId>
+            <version>0.1.2</version>
+        </dependency>
 
 
-	<build>
-		<!--最终编译jar包的名字-->
-		<finalName>${project.artifactId}-${project.version}</finalName>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<executions>
-						<execution>
-							<phase>clean</phase>
-						</execution>
-						<execution>
-							<id>docker-deploy</id>
-							<phase>deploy</phase>
-							<goals>
-								<goal>build-image</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<excludes>
-							<exclude>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-							</exclude>
-						</excludes>
-						<image>
-							<name>${docker.registry}/${docker.project.name}/${project.artifactId}:${project.version}</name>
-							<!-- 执行完build 自动push -->
-							<publish>true</publish>
-							<!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT -->
-							<pullPolicy>IF_NOT_PRESENT</pullPolicy>
-						</image>
-						<!--配置构建宿主机信息，本机不用配置-->
-						<docker>
-							<publishRegistry>
-								<username>${docker.username}</username>
-								<password>${docker.password}</password>
-								<url>${docker.registry}</url>
-							</publishRegistry>
-						</docker>
-					</configuration>
-				</plugin>
-				<plugin>
-					<!--maven部署插件-->
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>3.0.0-M1</version>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>${project.basedir}</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>*.yml</include>
-					<include>**/application-actuator.yml</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-micro-spring-boot-starter</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.experimental</groupId>
+                <artifactId>spring-native</artifactId>
+                <version>0.10.0-SNAPSHOT</version>
+            </dependency>
+
+            <!--spring r2dbc数据库依赖-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.4.3</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.49</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>2.4.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-kubernetes-client</artifactId>
+                <version>2.0.3</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <!--最终编译jar包的名字-->
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <pluginManagement>
+            <plugins>
+                <!--                <plugin>-->
+                <!--                    <groupId>org.springframework.boot</groupId>-->
+                <!--                    <artifactId>spring-boot-maven-plugin</artifactId>-->
+                <!--                    <executions>-->
+                <!--                        <execution>-->
+                <!--                            <phase>clean</phase>-->
+                <!--                        </execution>-->
+                <!--                        <execution>-->
+                <!--                            <id>docker-deploy</id>-->
+                <!--                            <phase>deploy</phase>-->
+                <!--                            <goals>-->
+                <!--                                <goal>build-image</goal>-->
+                <!--                            </goals>-->
+                <!--                        </execution>-->
+                <!--                    </executions>-->
+                <!--                    <configuration>-->
+                <!--                        <excludes>-->
+                <!--                            <exclude>-->
+                <!--                                <groupId>org.projectlombok</groupId>-->
+                <!--                                <artifactId>lombok</artifactId>-->
+                <!--                            </exclude>-->
+                <!--                        </excludes>-->
+                <!--                        <image>-->
+                <!--                            <name>${docker.registry}/${docker.project.name}/${project.artifactId}:${project.version}-->
+                <!--                            </name>-->
+                <!--                            &lt;!&ndash; 执行完build 自动push &ndash;&gt;-->
+                <!--                            <publish>true</publish>-->
+                <!--                            &lt;!&ndash; 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT &ndash;&gt;-->
+                <!--                            <pullPolicy>IF_NOT_PRESENT</pullPolicy>-->
+                <!--                        </image>-->
+                <!--                        &lt;!&ndash;配置构建宿主机信息，本机不用配置&ndash;&gt;-->
+                <!--                        <docker>-->
+                <!--                            <publishRegistry>-->
+                <!--                                <username>${docker.username}</username>-->
+                <!--                                <password>${docker.password}</password>-->
+                <!--                                <url>${docker.registry}</url>-->
+                <!--                            </publishRegistry>-->
+                <!--                        </docker>-->
+                <!--                    </configuration>-->
+                <!--                </plugin>-->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <fork>true</fork>
+                        <layers>
+                            <enabled>true</enabled>
+                        </layers>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                    <executions>
+                        <execution>
+                            <id>cls</id>
+                            <phase>clean</phase>
+                        </execution>
+                        <execution>
+                            <id>pkg</id>
+                            <phase>install</phase>
+                        </execution>
+                        <execution>
+                            <id>do-docker-image</id>
+                            <goals>
+                                <!-- java还是exec-->
+                                <goal>exec</goal>
+                            </goals>
+                            <!--生命周期-->
+                            <phase>deploy</phase>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <executable>
+                            ..\build\build.bat
+                        </executable>
+                        <arguments>
+                            <argument>${build.docker.registry}/${build.docker.project}/${project.artifactId}</argument>
+                            <argument>${project.version}</argument>
+                            <argument>${project.basedir}</argument>
+                            <argument>${build.docker.credential}</argument>
+                        </arguments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <!--maven部署插件-->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>*.yml</include>
+                    <include>**/*.xml</include>
+                    <include>**/application-actuator.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>
