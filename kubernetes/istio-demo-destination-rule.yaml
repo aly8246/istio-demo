@@ -6,10 +6,10 @@ metadata:
 spec:
   host: stock
   trafficPolicy:
-    connectionPool:
-      http:
-        http1MaxPendingRequests: 2
-        maxRequestsPerConnection: 3
+    #connectionPool:
+    #  http:
+    #    http1MaxPendingRequests: 2
+    #    maxRequestsPerConnection: 3
     outlierDetection:
       consecutiveErrors: 3
       interval: 30s
@@ -26,10 +26,10 @@ metadata:
 spec:
   host: goods
   trafficPolicy:
-    connectionPool:
-      http:
-        http1MaxPendingRequests: 2
-        maxRequestsPerConnection: 3
+    #connectionPool:
+    #  http:
+    #    http1MaxPendingRequests: 2
+    #    maxRequestsPerConnection: 3
     outlierDetection:
       consecutiveErrors: 3
       interval: 30s
@@ -46,10 +46,10 @@ metadata:
 spec:
   host: order
   trafficPolicy:
-    connectionPool:
-      http:
-        http1MaxPendingRequests: 2
-        maxRequestsPerConnection: 3
+    #connectionPool:
+    #  http:
+    #    http1MaxPendingRequests: 2
+    #    maxRequestsPerConnection: 3
     outlierDetection:
       consecutiveErrors: 3
       interval: 30s
